@@ -7,4 +7,10 @@ export type MLModelType = {
   input: string
   output: string
   modelType: string
+  metrics: {
+    accuracy?: string
+    f1score?: string
+    recal?: string
+  }
+  subModels?: Object[]
 }

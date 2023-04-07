@@ -52,7 +52,7 @@ const data: DataType[] = [
     imgHeight: 20,
     title: 'Trainer',
     color: 'primary',
-    amount: '$24,895.65',
+    amount: '75%',
     subtitle: 'Suat Bayır',
     imgSrc: '/images/cards/logo-zipcar.png'
   },
@@ -62,8 +62,8 @@ const data: DataType[] = [
     color: 'info',
     imgHeight: 27,
     title: 'F1 Score',
-    amount: '$8,650.20',
-    subtitle: 'Sketch, Figma & XD',
+    amount: '50%',
+    subtitle: 'Good',
     imgSrc: '/images/cards/logo-bitbank.png'
   },
   {
@@ -72,8 +72,8 @@ const data: DataType[] = [
     imgHeight: 20,
     title: 'Recall',
     color: 'secondary',
-    amount: '$1,245.80',
-    subtitle: 'HTML & Angular',
+    amount: '20%',
+    subtitle: 'Bad',
     imgSrc: '/images/cards/logo-aviato.png'
   }
 ]
@@ -139,7 +139,7 @@ const MachineLearningModelInfoCard = (props: IProps) => {
             <Box sx={{ display: 'flex', alignItems: 'center', color: 'success.main' }}>
               <Icon icon='mdi:menu-up' fontSize='1.875rem' />
               <Typography variant='body2' sx={{ fontWeight: 600, color: 'success.main' }}>
-                {model.accuracy}%
+                {model?.metrics?.accuracy}
               </Typography>
             </Box>
           </Box>

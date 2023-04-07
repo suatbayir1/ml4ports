@@ -26,7 +26,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Ensemble'
+    modelType: 'Ensemble',
+    metrics: {}
   },
   {
     modelName: 'Model B',
@@ -36,7 +37,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model C',
@@ -46,7 +48,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model A',
@@ -56,7 +59,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model B',
@@ -66,7 +70,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model C',
@@ -76,7 +81,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model A',
@@ -86,7 +92,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model B',
@@ -96,7 +103,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   },
   {
     modelName: 'Model C',
@@ -106,7 +114,8 @@ const data: MLModelType[] = [
     period: 5,
     input: 'input',
     output: 'output',
-    modelType: 'Single'
+    modelType: 'Single',
+    metrics: {}
   }
 ]
 

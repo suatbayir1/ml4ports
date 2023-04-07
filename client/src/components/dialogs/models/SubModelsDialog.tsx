@@ -20,6 +20,7 @@ import { MLModelType } from 'src/types/components/mlTypes'
 
 // ** Components Imports
 import MachineLearningModelInfoCard from 'src/components/cards/advanced/MachineLearningModelInfoCard'
+import { number } from 'yup'
 
 interface IProps {
   open: boolean
@@ -35,7 +36,7 @@ const SubModelsDialog = (props: IProps) => {
 
   return (
     <div>
-      <Dialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open} fullWidth>
+      <Dialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open} fullWidth maxWidth='md'>
         <DialogTitle id='customized-dialog-title' sx={{ p: 4 }}>
           <Typography variant='h6' component='span'>
             Sub Models of {model.modelName}
@@ -50,9 +51,13 @@ const SubModelsDialog = (props: IProps) => {
         </DialogTitle>
         <DialogContent dividers sx={{ p: 4 }}>
           <Grid container spacing={6}>
-            <Grid item xs={12} md={12} lg={12}>
-              <MachineLearningModelInfoCard model={model} />
-            </Grid>
+            {model.subModels?.map((subModel: any, index: number) => {
+              return (
+                <Grid item xs={12} md={12} lg={6} key={index}>
+                  <MachineLearningModelInfoCard model={subModel} />
+                </Grid>
+              )
+            })}
           </Grid>
         </DialogContent>
         <DialogActions sx={{ p: theme => `${theme.spacing(3)} !important` }}>

@@ -52,25 +52,17 @@ const ModelMetadataDialog = (props: IProps) => {
             collapsed={false}
             collapseStringsAfterLength={30}
             groupArraysAfterLength={100}
-            enableClipboard={true}
+            enableClipboard={false}
             displayObjectSize={true}
             displayDataTypes={true}
-            // onEdit={getDTOwnerAccess(selectedDT.owner, user.id) === true ? this.onEdit : false}
-            // onAdd={getDTOwnerAccess(selectedDT.owner, user.id) === true ? this.onAdd : false}
             defaultValue={null}
-            // onDelete={getDTOwnerAccess(selectedDT.owner, user.id) === true ? this.onDelete : false}
             sortKeys={false}
             quotesOnKeys={false}
-            validationMessage={'Please check your inputs'}
-            // displayArrayKey={true}
             style={{
               width: '100%'
             }}
           />
         </DialogContent>
-        <DialogActions sx={{ p: theme => `${theme.spacing(3)} !important` }}>
-          <Button onClick={handleClose}>Save changes</Button>
-        </DialogActions>
       </Dialog>
     </div>
   )
