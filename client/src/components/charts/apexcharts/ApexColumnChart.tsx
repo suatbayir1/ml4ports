@@ -22,6 +22,7 @@ import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import { useTranslation } from 'react-i18next'
 
 const columnColors = {
   bg: '#f8d3ff',
@@ -52,6 +53,8 @@ interface Props {
 const ApexColumnChart = ({ series }: Props) => {
   // ** Hook
   const theme = useTheme()
+
+  const { t, i18n } = useTranslation()
 
   // ** States
   const [endDate, setEndDate] = useState<DateType>(null)
@@ -166,7 +169,7 @@ const ApexColumnChart = ({ series }: Props) => {
   return (
     <Card>
       <CardHeader
-        title='Data Science'
+        title={t('Export-Import Statistics')}
         sx={{
           flexDirection: ['column', 'row'],
           alignItems: ['flex-start', 'center'],
@@ -181,7 +184,7 @@ const ApexColumnChart = ({ series }: Props) => {
             id='apexchart-column'
             startDate={startDate}
             onChange={handleOnChange}
-            placeholderText='Click to select a date'
+            placeholderText={t('DatePicker')}
             customInput={<CustomInput start={startDate as Date | number} end={endDate as Date | number} />}
           />
         }

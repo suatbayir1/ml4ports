@@ -131,5 +131,16 @@
   "Menu Level 3.2": "Menu Level 3.2",
   "Disabled Menu": "Disabled Menu",
   "Raise Support": "Raise Support",
-  "Documentation": "Documentation"
+  "Documentation": "Documentation",
+  "All":"All",
+  "Monthly":"Monthly",
+  "Yearly":"Yearly",
+  "DatePicker":"Click to select a date",
+  "GoodsGraphTitle":"Amount of Items Processed (In thousands)",
+  "Discharge Lines":"Discharge Lines",
+  "ContainersGraphTitle":"Amount of Containers Processed",
+  "Container Type":"Container Type",
+  "Search":"Search",
+  "Export-Import Forecast":"Export-Import Forecast",
+  "Export-Import Statistics":"Export-Import Statistics"
 }
