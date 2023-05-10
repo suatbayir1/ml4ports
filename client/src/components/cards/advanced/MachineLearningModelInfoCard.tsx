@@ -26,9 +26,11 @@ import { dateToLocaleDateString } from 'src/helpers/converter/timeConverter'
 
 // ** Custom Components Imports
 import OptionsMenu from 'src/components/option-menu'
+import MLModelInfoProperty from './MLModelInfoProperty'
 // import ModelMetadataDialog from 'src/components/dialogs/models/ModelMetadataDialog'
 const ModelMetadataDialog = dynamic(() => import('src/components/dialogs/models/ModelMetadataDialog'), { ssr: false })
 const SubModelsDialog = dynamic(() => import('src/components/dialogs/models/SubModelsDialog'), { ssr: false })
+const RedeployDialog = dynamic(() => import('src/components/dialogs/models/RedeployDialog'), { ssr: false })
 
 interface DataType {
   title: string
@@ -83,6 +85,7 @@ const MachineLearningModelInfoCard = (props: IProps) => {
 
   const [openModelMetadata, setOpenModelMetadata] = useState<boolean>(false)
   const [openSubModels, setOpenSubModels] = useState<boolean>(false)
+  const [currentOverlay, setCurrentOverlay] = useState<string>('')
 
   const handleOpenModelMetadata = () => setOpenModelMetadata(true)
   const handleOpenSubModels = () => setOpenSubModels(true)
@@ -90,7 +93,6 @@ const MachineLearningModelInfoCard = (props: IProps) => {
   const handleCloseSubModels = () => setOpenSubModels(false)
 
   const handleClickOption = (option: string) => {
-    console.log('clicked', option)
     switch (option) {
       case 'Show Metadata':
         setOpenModelMetadata(true)
@@ -103,7 +105,24 @@ const MachineLearningModelInfoCard = (props: IProps) => {
     }
   }
 
-  console.log('type', model.modelType)
+  const getImageSource = (metricTitle: string) => {
+    let src = ''
+
+    switch (metricTitle) {
+      case 'Accuracy':
+        src = '/images/cards/logo-zipcar.png'
+        break
+      case 'F1 Score':
+        src = '/images/cards/logo-bitbank.png'
+        break
+      case 'Recall':
+        src = '/images/cards/logo-aviato.png'
+        break
+    }
+    return src
+  }
+
+  console.log('metrics', model.metrics)
 
   return (
     <>
@@ -117,6 +136,11 @@ const MachineLearningModelInfoCard = (props: IProps) => {
         open={openSubModels}
         handleOpen={handleOpenSubModels}
         handleClose={handleCloseSubModels}
+        model={model}
+      />
+      <RedeployDialog
+        open={currentOverlay === 'redeploy' ? true : false}
+        handleClose={() => setCurrentOverlay('none')}
         model={model}
       />
 
@@ -134,65 +158,43 @@ const MachineLearningModelInfoCard = (props: IProps) => {
         <CardContent sx={{ pt: theme => `${theme.spacing(2.5)} !important` }}>
           <Box sx={{ mb: 0.5, display: 'flex', alignItems: 'center' }}>
             <Typography variant='h4' sx={{ fontWeight: 600, fontSize: '2.125rem !important' }}>
-              ETA
+              {model.algorithm}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', color: 'success.main' }}>
-              <Icon icon='mdi:menu-up' fontSize='1.875rem' />
-              <Typography variant='body2' sx={{ fontWeight: 600, color: 'success.main' }}>
-                {model?.metrics?.accuracy}
-              </Typography>
-            </Box>
           </Box>
 
           <Typography component='p' variant='caption' sx={{ mb: 5 }}>
             {dateToLocaleDateString(model.trainDate)}
           </Typography>
 
-          {data.map((item: DataType, index: number) => {
-            return (
-              <Box
-                key={item.title}
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  mb: index !== data.length - 1 ? 5 : undefined
-                }}
-              >
-                <Avatar
-                  variant='rounded'
-                  sx={{ mr: 3, backgroundColor: theme => `rgba(${theme.palette.customColors.main}, 0.04)` }}
-                >
-                  <img src={item.imgSrc} alt={item.title} width={item.imgWidth} height={item.imgHeight} />
-                </Avatar>
-                <Box
-                  sx={{
-                    width: '100%',
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column' }}>
-                    <Typography variant='body2' sx={{ mb: 0.5, fontWeight: 600, color: 'text.primary' }}>
-                      {item.title}
-                    </Typography>
-                    <Typography variant='caption'>{item.subtitle}</Typography>
-                  </Box>
+          {model.metrics && model.metrics.length > 0 ? (
+            <>
+              {model.metrics.map((item: any) => {
+                console.log(item)
+                return (
+                  <MLModelInfoProperty
+                    progress={item.progress}
+                    title={item.title}
+                    index={1}
+                    color={item.color}
+                    amount={item.amount}
+                    subtitle={item.subtitle}
+                    imgSrc={getImageSource(item.title)}
+                  />
+                )
+              })}
+            </>
+          ) : (
+            <h2>No metrics created</h2>
+          )}
 
-                  <Box sx={{ minWidth: 85, display: 'flex', flexDirection: 'column' }}>
-                    <Typography variant='body2' sx={{ mb: 2, fontWeight: 600, color: 'text.primary' }}>
-                      {item.amount}
-                    </Typography>
-                    <LinearProgress color={item.color} value={item.progress} variant='determinate' />
-                  </Box>
-                </Box>
-              </Box>
-            )
-          })}
-
-          <Button fullWidth variant='contained' sx={{ mt: 4.5 }} endIcon={<Icon icon='mdi:arrow-right' />}>
-            Retrain the model
+          <Button
+            onClick={() => setCurrentOverlay('redeploy')}
+            fullWidth
+            variant='contained'
+            sx={{ mt: 4.5 }}
+            endIcon={<Icon icon='mdi:arrow-right' />}
+          >
+            Redeploy the model
           </Button>
         </CardContent>
       </Card>

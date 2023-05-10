@@ -19,6 +19,34 @@ const createTrainedModelMetadata = asyncErrorWrapper(async (req, res, next) => {
   });
 });
 
+const redeployModel = asyncErrorWrapper(async (req, res, next) => {
+  return res.status(200).json({
+    fromCache: false,
+    message: "The model file was successfully saved",
+  });
+});
+
+const redeployModelMetadata = asyncErrorWrapper(async (req, res, next) => {
+  const { id: id } = req.params;
+
+  let model = await Model.findById(id);
+
+  Object.keys(req.body).forEach((key) => {
+    console.log(key);
+    model[key] = req.body[key];
+  });
+
+  console.log(model);
+
+  model = await model.save();
+
+  return res.status(200).json({
+    fromCache: false,
+    message: "The model metadata was successfully updated",
+    data: model,
+  });
+});
+
 const getTrainedModelsMetadata = asyncErrorWrapper(async (req, res, next) => {
   const { isPassed, lastUpdateTime, dataInMemory } = res.locals;
   const fromDate = getFromDate(isPassed, lastUpdateTime);
@@ -59,4 +87,6 @@ module.exports = {
   createTrainedModelMetadata,
   getTrainedModelsMetadata,
   getTrainedModelMetadata,
+  redeployModel,
+  redeployModelMetadata,
 };

@@ -15,109 +15,10 @@ import { fetchData } from 'src/store/apps/model'
 import { RootState, AppDispatch } from 'src/store'
 import { MLModelType } from 'src/types/components/mlTypes'
 
-type Props = {}
+// ** Styled Component
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
-const data: MLModelType[] = [
-  {
-    modelName: 'Model A',
-    trainer: 'Jason Statham',
-    trainDate: new Date(),
-    accuracy: 94,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Ensemble',
-    metrics: {}
-  },
-  {
-    modelName: 'Model B',
-    trainer: 'Tom Cruise',
-    trainDate: new Date(),
-    accuracy: 40,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model C',
-    trainer: 'Morgan Freeman',
-    trainDate: new Date(),
-    accuracy: 55,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model A',
-    trainer: 'Jason Statham',
-    trainDate: new Date(),
-    accuracy: 94,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model B',
-    trainer: 'Tom Cruise',
-    trainDate: new Date(),
-    accuracy: 40,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model C',
-    trainer: 'Morgan Freeman',
-    trainDate: new Date(),
-    accuracy: 55,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model A',
-    trainer: 'Jason Statham',
-    trainDate: new Date(),
-    accuracy: 94,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model B',
-    trainer: 'Tom Cruise',
-    trainDate: new Date(),
-    accuracy: 40,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  },
-  {
-    modelName: 'Model C',
-    trainer: 'Morgan Freeman',
-    trainDate: new Date(),
-    accuracy: 55,
-    period: 5,
-    input: 'input',
-    output: 'output',
-    modelType: 'Single',
-    metrics: {}
-  }
-]
+type Props = {}
 
 const index = (props: Props) => {
   // ** Hooks
@@ -130,15 +31,17 @@ const index = (props: Props) => {
   }, [dispatch])
 
   return (
-    <Grid container spacing={6}>
-      {store.models.map((model: MLModelType, index: number) => {
-        return (
-          <Grid item xs={12} md={6} lg={4} key={index}>
-            <MachineLearningModelInfoCard model={model} />
-          </Grid>
-        )
-      })}
-    </Grid>
+    <DatePickerWrapper>
+      <Grid container spacing={6}>
+        {store.models.map((model: MLModelType, index: number) => {
+          return (
+            <Grid item xs={12} md={6} lg={4} key={index}>
+              <MachineLearningModelInfoCard model={model} />
+            </Grid>
+          )
+        })}
+      </Grid>
+    </DatePickerWrapper>
   )
 }
 

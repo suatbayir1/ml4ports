@@ -43,7 +43,7 @@ const ModelSchema = new Schema(
       default: Date.now,
     },
     metrics: {
-      type: Object,
+      type: Array,
     },
     subModels: {
       type: Array,

@@ -4,13 +4,11 @@ export type MLModelType = {
   trainDate: Date
   accuracy: number
   period: number
+  algorithm: string
   input: string
   output: string
   modelType: string
-  metrics: {
-    accuracy?: string
-    f1score?: string
-    recal?: string
-  }
+  metrics: Object[]
   subModels?: Object[]
+  _id?: string
 }

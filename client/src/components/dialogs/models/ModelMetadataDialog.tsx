@@ -46,7 +46,7 @@ const ModelMetadataDialog = (props: IProps) => {
         <DialogContent dividers sx={{ p: 4 }}>
           <ReactJson
             src={json}
-            name={'selectedNode'}
+            name={'metadata'}
             iconStyle={'triangle'}
             indentWidth={3}
             collapsed={false}

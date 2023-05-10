@@ -7,6 +7,8 @@ const {
   getTrainedModelsMetadata,
   getTrainedModelMetadata,
   createTrainedModelMetadata,
+  redeployModel,
+  redeployModelMetadata,
 } = require("../controllers/models");
 
 // Middlewares
@@ -15,6 +17,7 @@ const {
   checkTrainedModelMetadataIsExists,
   checkTrainedModelMetadataIsExistsById,
 } = require("../middlewares/database/assetChecker");
+const modelFileUpload = require("../middlewares/libraries/ModelFileUpload");
 
 // Routes
 router.post(
@@ -25,7 +28,7 @@ router.post(
 
 router.get(
   "/getTrainedModelsMetadata",
-  isExistsInCache,
+  // isExistsInCache,
   getTrainedModelsMetadata
 );
 
@@ -34,5 +37,13 @@ router.get(
   [isExistsInCache, checkTrainedModelMetadataIsExistsById],
   getTrainedModelMetadata
 );
+
+router.post(
+  "/:id/redeployModelFile",
+  [modelFileUpload.single("file")],
+  redeployModel
+);
+
+router.post("/:id/redeployModelMetadata", redeployModelMetadata);
 
 module.exports = router;

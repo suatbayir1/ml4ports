@@ -32,8 +32,6 @@ interface IProps {
 const SubModelsDialog = (props: IProps) => {
   const { open, model, handleOpen, handleClose } = props
 
-  console.log(model)
-
   return (
     <div>
       <Dialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open} fullWidth maxWidth='md'>
@@ -60,9 +58,6 @@ const SubModelsDialog = (props: IProps) => {
             })}
           </Grid>
         </DialogContent>
-        <DialogActions sx={{ p: theme => `${theme.spacing(3)} !important` }}>
-          <Button onClick={handleClose}>Save changes</Button>
-        </DialogActions>
       </Dialog>
     </div>
   )
