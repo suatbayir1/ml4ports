@@ -20,6 +20,7 @@ import { ApexOptions } from 'apexcharts'
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
+import { useTranslation } from 'react-i18next'
 
 // const series = [
 //   {
@@ -35,6 +36,8 @@ interface Props {
 const ApexLineForecastChart = ({ series, title }: Props) => {
   // ** State
   const [active, setActive] = useState<string | null>('daily')
+
+  const { t, i18n } = useTranslation()
 
   // ** Hook
   const theme = useTheme()
@@ -175,9 +178,9 @@ const ApexLineForecastChart = ({ series, title }: Props) => {
         }}
         action={
           <ToggleButtonGroup exclusive value={active} onChange={handleActive}>
-            <ToggleButton value='daily'>Daily</ToggleButton>
-            <ToggleButton value='monthly'>Monthly</ToggleButton>
-            <ToggleButton value='yearly'>Yearly</ToggleButton>
+            <ToggleButton value='daily'>{t("Daily")}</ToggleButton>
+            <ToggleButton value='monthly'>{t("Monthly")}</ToggleButton>
+            <ToggleButton value='yearly'>{t("Yearly")}</ToggleButton>
           </ToggleButtonGroup>
         }
       />

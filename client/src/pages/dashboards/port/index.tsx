@@ -26,9 +26,35 @@ import CrmSalesOverview from 'src/views/dashboards/crm/CrmSalesOverview'
 import CrmMeetingSchedule from 'src/views/dashboards/crm/CrmMeetingSchedule'
 import CrmDeveloperMeetup from 'src/views/dashboards/crm/CrmDeveloperMeetup'
 import CrmActivityTimeline from 'src/views/dashboards/crm/CrmActivityTimeline'
-import ApexDonutChart from 'src/views/charts/apex-charts/ApexDonutChart'
+// import ApexDonutChart from 'src/views/charts/apex-charts/ApexDonutChart'
 import ApexColumnChart from 'src/components/charts/apexcharts/ApexColumnChart'
 import ApexLineForecastChart from 'src/components/charts/apexcharts/ApexLineForecastChart'
+
+
+// ** Fake DB Imports
+import goods from 'src/@fake-db/liman/goods'
+import group_name_key from 'src/@fake-db/liman/group_name_key'
+import lines from 'src/@fake-db/liman/lines'
+import regime_names from 'src/@fake-db/liman/regime-names'
+import containers from 'src/@fake-db/liman/containers'
+
+import { forwardRef, useContext, useState } from 'react'
+import { AbilityContext } from 'src/layouts/components/acl/Can'
+import { format } from 'date-fns'
+import { Card, CardContent, CardHeader, InputAdornment, TextField, Typography } from '@mui/material'
+import { DatePicker } from '@mui/lab'
+
+import ApexLineChartContainers from 'src/views/charts/liman-graphs/ApexLineChartContainers'
+import ApexLineChart from 'src/views/charts/liman-graphs/ApexLineChart'
+import ApexHeatmapChart from 'src/views/charts/liman-graphs/ApexHeatmapChart'
+import ApexDonutChart from 'src/views/charts/liman-graphs/ApexDonutChart'
+import ApexColumnChartGoods from 'src/views/charts/liman-graphs/ApexColumnChartGoods'
+import { useTranslation } from 'react-i18next'
+
+interface PickerProps {
+  start: Date | number
+  end: Date | number
+}
 
 const data: CardStatsCharacterProps[] = [
   {
@@ -62,6 +88,47 @@ const series = [
 ]
 
 const PortDashboard = () => {
+  const { t, i18n } = useTranslation()
+
+  const ability = useContext(AbilityContext)  
+  const [endDate, setEndDate] = useState<any>(null)
+  const [startDate, setStartDate] = useState<any>(null)
+
+  const handleOnChange = (dates: any) => {
+    const [start, end] = dates
+    setStartDate(start)
+    setEndDate(end)
+  }
+
+  const CustomInput = forwardRef((props: PickerProps, ref) => {
+    const startDateStr = props.start !== null ? format(props.start, 'MM/dd/yyyy') : ''
+    const endDateStr = props.end !== null ? ` - ${format(props.end, 'MM/dd/yyyy')}` : null
+
+    const value = `${startDateStr}${endDateStr !== null ? endDateStr : ''}`
+
+    return (
+      <TextField
+        {...props}
+        size='small'
+        value={value}
+        inputRef={ref}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <Icon icon='mdi:bell-outline' />
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position='end'>
+              <Icon icon='mdi:chevron-down' />
+            </InputAdornment>
+          )
+        }}
+      />
+    )
+  })
+
+
   return (
     <ApexChartWrapper>
       <DatePickerWrapper>
@@ -70,11 +137,72 @@ const PortDashboard = () => {
             <ApexColumnChart series={series} />
           </Grid>
           <Grid item xs={12}>
-            <ApexLineForecastChart series={series} title={'İhracat-İthalat Tahmini'} />
+            <ApexLineForecastChart series={series} title={t("Export-Import Forecast")} />
           </Grid>
-          <Grid item xs={12} md={6}>
-            <ApexDonutChart />
+          {/* ======================= */}
+            <Grid item xs={12}>
+              <Card>
+              <CardHeader
+                title={t("ContainersGraphTitle")}
+                action={
+                  <DatePicker
+                    selectsRange
+                    endDate={endDate}
+                    id='apexchart-area'
+                    startDate={startDate}
+                    selected={startDate}
+                    onChange={handleOnChange}
+                    placeholderText={t("DatePicker")}
+                    customInput={<CustomInput start={startDate as Date | number} end={endDate as Date | number} />}
+                  />}
+                />
+                <CardContent>
+                  <Grid item container spacing={6} xs={12}>
+                    <Grid item item md={4} xs={12}>
+                      <ApexDonutChart containers={containers} regime_names={regime_names} startDate={startDate} endDate={endDate}/>
+                    </Grid>
+                    <Grid item item md={8} xs={12}>
+                      <ApexLineChartContainers containers={containers} regime_names={regime_names} startDate={startDate} endDate={endDate}/>
+                    </Grid>
+                  </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+              {/* <Grid item xs={12}>
+                <GoodsApexCharts goods={goods} groups={group_name_key} />
+              </Grid> */}
+              <Grid item xs={12}>
+                <ApexColumnChartGoods goods={goods} title={"Number of goods"}/>
+              </Grid>
+              <Grid item xs={12}>
+                <ApexLineChart goods={goods} groups={group_name_key} title={"Number of goods"}/>
+              </Grid>
+              <Grid item xs={12}>
+                <ApexHeatmapChart lines={lines} title={"Discharge Lines"}/>
+              </Grid>
+              <Grid item container spacing={6} xs={12}>
+              <Grid item md={6} xs={12}>
+                <Card>
+                  <CardHeader title='Common' />
+                  <CardContent>
+                    <Typography sx={{ mb: 4 }}>No ability is required to view this card</Typography>
+                    <Typography sx={{ color: 'primary.main' }}>This card is visible to 'user' and 'admin' both</Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              {ability?.can('read', 'liman-graphs-footer') ? (
+                <Grid item md={6} xs={12}>
+                  <Card>
+                    <CardHeader title='Analytics' />
+                    <CardContent>
+                      <Typography sx={{ mb: 4 }}>User with 'Analytics' subject's 'Read' ability can view this card</Typography>
+                      <Typography sx={{ color: 'error.main' }}>This card is visible to 'admin' only</Typography>
+                    </CardContent>
+                  </Card>
+              </Grid>
+            ) : null}
           </Grid>
+          {/* ======================= */}
           <Grid item xs={12} sm={6} md={3}>
             <CrmTotalSales />
           </Grid>
