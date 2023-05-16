@@ -36,7 +36,7 @@ const index = (props: Props) => {
         {store.models.map((model: MLModelType, index: number) => {
           return (
             <Grid item xs={12} md={6} lg={4} key={index}>
-              <MachineLearningModelInfoCard model={model} />
+              <MachineLearningModelInfoCard model={model} type='main-model' />
             </Grid>
           )
         })}

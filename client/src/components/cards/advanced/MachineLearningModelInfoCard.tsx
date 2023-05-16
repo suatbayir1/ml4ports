@@ -29,6 +29,7 @@ import OptionsMenu from 'src/components/option-menu'
 import MLModelInfoProperty from './MLModelInfoProperty'
 // import ModelMetadataDialog from 'src/components/dialogs/models/ModelMetadataDialog'
 const ModelMetadataDialog = dynamic(() => import('src/components/dialogs/models/ModelMetadataDialog'), { ssr: false })
+const UsedFeaturesDialog = dynamic(() => import('src/components/dialogs/models/UsedFeaturesDialog'), { ssr: false })
 const SubModelsDialog = dynamic(() => import('src/components/dialogs/models/SubModelsDialog'), { ssr: false })
 const RedeployDialog = dynamic(() => import('src/components/dialogs/models/RedeployDialog'), { ssr: false })
 
@@ -45,6 +46,7 @@ interface DataType {
 
 interface IProps {
   model: MLModelType
+  type: 'main-model' | 'sub-model'
 }
 
 const data: DataType[] = [
@@ -85,12 +87,8 @@ const MachineLearningModelInfoCard = (props: IProps) => {
 
   const [openModelMetadata, setOpenModelMetadata] = useState<boolean>(false)
   const [openSubModels, setOpenSubModels] = useState<boolean>(false)
+  const [openUsedFeatures, setOpenUsedFeatures] = useState<boolean>(false)
   const [currentOverlay, setCurrentOverlay] = useState<string>('')
-
-  const handleOpenModelMetadata = () => setOpenModelMetadata(true)
-  const handleOpenSubModels = () => setOpenSubModels(true)
-  const handleCloseModelMetadata = () => setOpenModelMetadata(false)
-  const handleCloseSubModels = () => setOpenSubModels(false)
 
   const handleClickOption = (option: string) => {
     switch (option) {
@@ -99,6 +97,9 @@ const MachineLearningModelInfoCard = (props: IProps) => {
         break
       case 'Sub Models':
         setOpenSubModels(true)
+        break
+      case 'Used Features':
+        setOpenUsedFeatures(true)
         break
       default:
         break
@@ -126,22 +127,14 @@ const MachineLearningModelInfoCard = (props: IProps) => {
 
   return (
     <>
-      <ModelMetadataDialog
-        open={openModelMetadata}
-        handleOpen={handleOpenModelMetadata}
-        handleClose={handleCloseModelMetadata}
-        model={model}
-      />
-      <SubModelsDialog
-        open={openSubModels}
-        handleOpen={handleOpenSubModels}
-        handleClose={handleCloseSubModels}
-        model={model}
-      />
+      <ModelMetadataDialog open={openModelMetadata} handleClose={() => setOpenModelMetadata(false)} model={model} />
+      <SubModelsDialog open={openSubModels} handleClose={() => setOpenSubModels(false)} model={model} />
+      <UsedFeaturesDialog open={openUsedFeatures} handleClose={() => setOpenUsedFeatures(false)} model={model} />
       <RedeployDialog
         open={currentOverlay === 'redeploy' ? true : false}
         handleClose={() => setCurrentOverlay('none')}
         model={model}
+        type={props.type}
       />
 
       <Card sx={{ border: model.modelType === 'Ensemble' ? '1px solid red' : '1px solid blue' }}>
@@ -150,7 +143,11 @@ const MachineLearningModelInfoCard = (props: IProps) => {
           action={
             <OptionsMenu
               handleClickOption={handleClickOption}
-              options={model.modelType === 'Ensemble' ? ['Show Metadata', 'Sub Models'] : ['Show Metadata']}
+              options={
+                model.modelType === 'Ensemble' && props.type === 'main-model'
+                  ? ['Show Metadata', 'Sub Models', 'Used Features']
+                  : ['Show Metadata', 'Used Features']
+              }
               iconButtonProps={{ size: 'small', sx: { color: 'text.primary' } }}
             />
           }

@@ -1,8 +1,9 @@
 // ** Redux Imports
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { NotificationManager } from 'react-notifications'
 
 // ** Axios Imports
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 // ** Helpers
 import { getUrl } from 'src/helpers/api/getter'
@@ -24,9 +25,14 @@ export const fetchData = createAsyncThunk('models/getTrainedModels', async () =>
 export const redeployModel = createAsyncThunk(
   'models/redeployModel',
   async (params: any, { dispatch, getState }: ReduxType) => {
-    const response = await axios.post(getUrl(`model/${params.id}/redeployModelFile`), params.formData)
-    if (response.status === 200) {
-      dispatch(redeployModelMetadata(params))
+    try {
+      const response = await axios.post(getUrl(`model/${params.id}/redeployModelFile`), params.formData)
+      if (response.status === 200) {
+        dispatch(redeployModelMetadata(params))
+      }
+    } catch (error: any) {
+      console.log(error)
+      NotificationManager.error(error.response.data.message, 'Error', 3000)
     }
   }
 )
@@ -38,6 +44,10 @@ export const redeployModelMetadata = createAsyncThunk(
     console.log(response)
     if (response.status === 200) {
       dispatch(fetchData())
+      params.handleClose()
+      NotificationManager.success('The model redeployed successfully', 'Success', 3000)
+    } else {
+      NotificationManager.error('An error occurred while updating the model metadata', 'Error', 3000)
     }
   }
 )

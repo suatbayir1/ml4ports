@@ -25,12 +25,11 @@ import { number } from 'yup'
 interface IProps {
   open: boolean
   model: MLModelType
-  handleOpen: () => void
   handleClose: () => void
 }
 
 const SubModelsDialog = (props: IProps) => {
-  const { open, model, handleOpen, handleClose } = props
+  const { open, model, handleClose } = props
 
   return (
     <div>
@@ -52,7 +51,7 @@ const SubModelsDialog = (props: IProps) => {
             {model.subModels?.map((subModel: any, index: number) => {
               return (
                 <Grid item xs={12} md={12} lg={6} key={index}>
-                  <MachineLearningModelInfoCard model={subModel} />
+                  <MachineLearningModelInfoCard model={subModel} type='sub-model' />
                 </Grid>
               )
             })}

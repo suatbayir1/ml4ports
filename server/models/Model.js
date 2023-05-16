@@ -45,12 +45,18 @@ const ModelSchema = new Schema(
     metrics: {
       type: Array,
     },
+    inputs: {
+      type: Array,
+    },
+    outputs: {
+      type: Array,
+    },
     subModels: {
       type: Array,
     },
-    modelPath: {
+    modelUrl: {
       type: String,
-      required: [true, "Please provide a model path"],
+      required: [true, "Please provide a model url"],
     },
   },
   { strict: false }

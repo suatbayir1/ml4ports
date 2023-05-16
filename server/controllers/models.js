@@ -31,12 +31,16 @@ const redeployModelMetadata = asyncErrorWrapper(async (req, res, next) => {
 
   let model = await Model.findById(id);
 
-  Object.keys(req.body).forEach((key) => {
-    console.log(key);
-    model[key] = req.body[key];
-  });
-
-  console.log(model);
+  if (req.body.tab === "main-model") {
+    Object.keys(req.body).forEach((key) => {
+      if (key !== "tab") {
+        model[key] = req.body[key];
+      }
+    });
+  } else {
+    const subModel = (({ tab, ...o }) => o)(req.body); // remove b and c
+    model.subModels.push(subModel);
+  }
 
   model = await model.save();
 

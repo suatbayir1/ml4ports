@@ -20,12 +20,11 @@ import { MLModelType } from 'src/types/components/mlTypes'
 interface IProps {
   open: boolean
   model: MLModelType
-  handleOpen: () => void
   handleClose: () => void
 }
 
 const ModelMetadataDialog = (props: IProps) => {
-  const { open, model, handleOpen, handleClose } = props
+  const { open, model, handleClose } = props
   const [json, setJson] = useState<MLModelType | Object>(model)
 
   return (

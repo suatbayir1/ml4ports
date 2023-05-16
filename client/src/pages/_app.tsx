@@ -1,5 +1,6 @@
 // ** React Imports
 import { ReactNode } from 'react'
+import { NotificationContainer } from 'react-notifications'
 
 // ** Next Imports
 import Head from 'next/head'
@@ -63,6 +64,7 @@ import 'src/iconify-bundle/icons-bundle-react'
 
 // ** Global css styles
 import '../../styles/globals.css'
+import 'react-notifications/lib/notifications.css'
 
 // ** Extend App Props with Emotion
 type ExtendedAppProps = AppProps & {
@@ -137,6 +139,8 @@ const App = (props: ExtendedAppProps) => {
               {({ settings }) => {
                 return (
                   <ThemeComponent settings={settings}>
+                    <NotificationContainer />
+
                     <WindowWrapper>
                       <Guard authGuard={authGuard} guestGuard={guestGuard}>
                         <AclGuard aclAbilities={aclAbilities} guestGuard={guestGuard}>
