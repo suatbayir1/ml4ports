@@ -24,7 +24,7 @@ $ pip3 install -r requirements.txt
 
 **To start the FastAPI server:**
 ```bash
-$ PYTHONPATH=.. uvicorn main:app --reload
+$ python main.py
 ```
 
-**To see the API documentation visit: http://127.0.0.1:8000/docs**
+**To see the API documentation visit: http://127.0.0.1:7777/docs**

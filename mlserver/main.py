@@ -109,3 +109,8 @@ async def make_gumruk_prediction(gumruk_input: GumrukInput):
     if(len(preds) == 0):
         return{"msg": "No prediction"}
     return {"prediction": preds.tolist()}
+
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=7777)
