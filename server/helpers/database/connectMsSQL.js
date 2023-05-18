@@ -4,8 +4,8 @@ const sql = require("mssql");
 // Constants
 const config = {
   user: "sa",
-  password: "erste2023",
-  server: "DESKTOP-DRC8T6C",
+  password: "mysqlpassword",
+  server: "localhost",
   database: "PORTDATA",
   requestTimeout: 600000,
   options: {

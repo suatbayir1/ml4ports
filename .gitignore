@@ -160,3 +160,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+client/src/@fake-db/liman/grouped_1df.json
+client/src/@fake-db/liman/grouped_2df_2016.json
+client/src/@fake-db/liman/grouped_2df_2017.json
+client/src/@fake-db/liman/grouped_2df_2018.json
+client/src/@fake-db/liman/grouped_2df_2019.json
+client/src/@fake-db/liman/grouped_2df_2020.json
+client/src/@fake-db/liman/grouped_2df_2021.json

@@ -25,8 +25,8 @@ app.use(customErrorHandler);
 
 // Database app connections
 connectMongoDB();
-redisClient.connect().then(() => {
-  app.listen(process.env.PORT, () => {
-    console.log(`App started on ${process.env.PORT} : ${process.env.NODE_ENV}`);
-  });
-});
+// redisClient.connect().then(() => {
+//   app.listen(process.env.PORT, () => {
+//     console.log(`App started on ${process.env.PORT} : ${process.env.NODE_ENV}`);
+//   });
+// });

@@ -43,6 +43,9 @@ import { AbilityContext } from 'src/layouts/components/acl/Can'
 import { format } from 'date-fns'
 import { Card, CardContent, CardHeader, InputAdornment, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/lab'
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 
 import ApexLineChartContainers from 'src/views/charts/liman-graphs/ApexLineChartContainers'
 import ApexLineChart from 'src/views/charts/liman-graphs/ApexLineChart'
@@ -50,6 +53,12 @@ import ApexHeatmapChart from 'src/views/charts/liman-graphs/ApexHeatmapChart'
 import ApexDonutChart from 'src/views/charts/liman-graphs/ApexDonutChart'
 import ApexColumnChartGoods from 'src/views/charts/liman-graphs/ApexColumnChartGoods'
 import { useTranslation } from 'react-i18next'
+import ApexBarChartShips from 'src/views/charts/liman-graphs/ApexBarChartShips'
+import ApexBarChartLineKey from 'src/views/charts/liman-graphs/ApexBarChartLineKey'
+import ApexBarChartGoods from 'src/views/charts/liman-graphs/ApexBarChartGoods'
+import ApexBarChartCompany from 'src/views/charts/liman-graphs/ApexBarChartCompany'
+import ApexBarChartLineKeyDB from 'src/views/charts/liman-graphs/ApexBarChartLineKeyDB'
+
 
 interface PickerProps {
   start: Date | number
@@ -87,12 +96,35 @@ const series = [
   }
 ]
 
+function TabPanel(props) {
+  const { children, value, index } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      style={{ display: value === index ? 'block' : 'none' }}
+    >
+      <Box>{children}</Box>
+    </div>
+  );
+}
+
+
+
 const PortDashboard = () => {
   const { t, i18n } = useTranslation()
 
   const ability = useContext(AbilityContext)  
   const [endDate, setEndDate] = useState<any>(null)
   const [startDate, setStartDate] = useState<any>(null)
+  const [currentTab, setCurrentTab] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setCurrentTab(newValue);
+  };
 
   const handleOnChange = (dates: any) => {
     const [start, end] = dates
@@ -161,7 +193,7 @@ const PortDashboard = () => {
                     <Grid item item md={4} xs={12}>
                       <ApexDonutChart containers={containers} regime_names={regime_names} startDate={startDate} endDate={endDate}/>
                     </Grid>
-                    <Grid item item md={8} xs={12}>
+                    <Grid item md={8} xs={12}>
                       <ApexLineChartContainers containers={containers} regime_names={regime_names} startDate={startDate} endDate={endDate}/>
                     </Grid>
                   </Grid>
@@ -171,6 +203,36 @@ const PortDashboard = () => {
               {/* <Grid item xs={12}>
                 <GoodsApexCharts goods={goods} groups={group_name_key} />
               </Grid> */}
+
+              <Grid item xs={12}>
+                {/* Add the tabs component */}
+                <Tabs value={currentTab} onChange={handleTabChange}>
+                  <Tab label="Ships" />
+                  <Tab label="Line Keys" />
+                  <Tab label="Goods" />
+                  <Tab label="Companies" />
+                </Tabs>
+
+                {/* Add the tab panels */}
+                <TabPanel value={currentTab} index={0}>
+                  <ApexBarChartShips />
+                </TabPanel>
+                <TabPanel value={currentTab} index={1}>
+                  <ApexBarChartLineKey />
+                </TabPanel>
+                <TabPanel value={currentTab} index={2}>
+                  <ApexBarChartGoods />
+                </TabPanel>
+                <TabPanel value={currentTab} index={3}>
+                  <ApexBarChartCompany />
+                </TabPanel>
+              </Grid>
+
+
+              {/* <Grid item xs={12}>
+                <ApexBarChartLineKeyDB/>
+              </Grid> */}
+
               <Grid item xs={12}>
                 <ApexColumnChartGoods goods={goods} title={"Number of goods"}/>
               </Grid>
