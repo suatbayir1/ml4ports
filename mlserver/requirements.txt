@@ -1,0 +1,8 @@
+fastapi==0.89.1
+uvicorn==0.20.0
+scikit-learn==1.2.1
+pytest==7.2.1
+boom==1.0
+pandas==1.5.3
+dill==0.3.6
+xgboost==1.7.3
