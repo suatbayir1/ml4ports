@@ -58,6 +58,10 @@ const ModelSchema = new Schema(
       type: String,
       required: [true, "Please provide a model url"],
     },
+    endpoint: {
+      type: String,
+      required: [true, "Please provide a endpoint"],
+    },
   },
   { strict: false }
 );

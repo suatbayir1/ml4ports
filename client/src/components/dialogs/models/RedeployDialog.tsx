@@ -92,6 +92,7 @@ const Redeploy = (props: IProps) => {
   const [startDate, setStartDate] = useState<DateType>(null)
   const [endDate, setEndDate] = useState<DateType>(null)
   const [description, setDescription] = useState<string>('')
+  const [endpoint, setEndpoint] = useState<string>('')
   const [metrics, setMetrics] = useState<Metric[]>([{ progress: 0, title: '', color: '', amount: '', subtitle: '' }])
   const [inputs, setInputs] = useState<Input[]>([{ name: '', description: '' }])
   const [outputs, setOutputs] = useState<Output[]>([{ name: '', description: '' }])
@@ -142,8 +143,19 @@ const Redeploy = (props: IProps) => {
   }
 
   const addNewMetric = () => {
-    console.log(metrics)
     setMetrics([...metrics, { progress: 0, title: '', color: '', amount: '', subtitle: '' }])
+  }
+
+  const deleteMetric = (index: number) => {
+    setMetrics(metric => metrics.filter((_, i) => i != index))
+  }
+
+  const deleteInput = (index: number) => {
+    setInputs(input => inputs.filter((_, i) => i != index))
+  }
+
+  const deleteOutput = (index: number) => {
+    setOutputs(output => outputs.filter((_, i) => i != index))
   }
 
   const addNewInput = () => {
@@ -216,6 +228,7 @@ const Redeploy = (props: IProps) => {
         startDate: startDate?.toString(),
         endDate: endDate?.toString(),
         description,
+        endpoint,
         metrics,
         inputs,
         outputs,
@@ -340,7 +353,7 @@ const Redeploy = (props: IProps) => {
                             onChange={(date: Date) => setEndDate(date)}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <TextField
                             multiline
                             rows={3}
@@ -348,6 +361,16 @@ const Redeploy = (props: IProps) => {
                             onChange={e => setDescription(e.target.value)}
                             label='Description'
                             placeholder='Description'
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            multiline
+                            rows={3}
+                            fullWidth
+                            onChange={e => setEndpoint(e.target.value)}
+                            label='Endpoint'
+                            placeholder='Endpoint'
                           />
                         </Grid>
                         <Grid item xs={12}>
@@ -379,7 +402,7 @@ const Redeploy = (props: IProps) => {
                                   </Select>
                                 </FormControl>
                               </Grid>
-                              <Grid item xs={12} sm={3}>
+                              <Grid item xs={12} sm={2}>
                                 <TextField
                                   fullWidth
                                   label='Sub Title'
@@ -427,6 +450,19 @@ const Redeploy = (props: IProps) => {
                                   </Select>
                                 </FormControl>
                               </Grid>
+                              <Grid item xs={12} sm={1}>
+                                <FormControl fullWidth>
+                                  <IconButton
+                                    onClick={() => {
+                                      deleteMetric(index)
+                                    }}
+                                    aria-label='capture screenshot'
+                                    color='error'
+                                  >
+                                    <Icon icon='mdi:close' />
+                                  </IconButton>
+                                </FormControl>
+                              </Grid>
                             </React.Fragment>
                           )
                         })}
@@ -458,7 +494,7 @@ const Redeploy = (props: IProps) => {
                                   onChange={e => handleChangeInputs(e, index)}
                                 />
                               </Grid>
-                              <Grid item xs={12} sm={9}>
+                              <Grid item xs={12} sm={8}>
                                 <TextField
                                   fullWidth
                                   label='Description'
@@ -467,6 +503,19 @@ const Redeploy = (props: IProps) => {
                                   value={input.description}
                                   onChange={e => handleChangeInputs(e, index)}
                                 />
+                              </Grid>
+                              <Grid item xs={12} sm={1}>
+                                <FormControl fullWidth>
+                                  <IconButton
+                                    onClick={() => {
+                                      deleteInput(index)
+                                    }}
+                                    aria-label='capture screenshot'
+                                    color='error'
+                                  >
+                                    <Icon icon='mdi:close' />
+                                  </IconButton>
+                                </FormControl>
                               </Grid>
                             </React.Fragment>
                           )
@@ -494,7 +543,7 @@ const Redeploy = (props: IProps) => {
                                   onChange={e => handleChangeOutputs(e, index)}
                                 />
                               </Grid>
-                              <Grid item xs={12} sm={9}>
+                              <Grid item xs={12} sm={8}>
                                 <TextField
                                   fullWidth
                                   label='Description'
@@ -503,6 +552,19 @@ const Redeploy = (props: IProps) => {
                                   value={output.description}
                                   onChange={e => handleChangeOutputs(e, index)}
                                 />
+                              </Grid>
+                              <Grid item xs={12} sm={1}>
+                                <FormControl fullWidth>
+                                  <IconButton
+                                    onClick={() => {
+                                      deleteOutput(index)
+                                    }}
+                                    aria-label='capture screenshot'
+                                    color='error'
+                                  >
+                                    <Icon icon='mdi:close' />
+                                  </IconButton>
+                                </FormControl>
                               </Grid>
                             </React.Fragment>
                           )
@@ -610,7 +672,7 @@ const Redeploy = (props: IProps) => {
                             onChange={(date: Date) => setEndDate(date)}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={6}>
                           <TextField
                             multiline
                             rows={3}
@@ -618,6 +680,16 @@ const Redeploy = (props: IProps) => {
                             onChange={e => setDescription(e.target.value)}
                             label='Description'
                             placeholder='Description'
+                          />
+                        </Grid>
+                        <Grid item xs={6}>
+                          <TextField
+                            multiline
+                            rows={3}
+                            fullWidth
+                            onChange={e => setEndpoint(e.target.value)}
+                            label='Endpoint'
+                            placeholder='Endpoint'
                           />
                         </Grid>
                         <Grid item xs={12}>
@@ -649,7 +721,7 @@ const Redeploy = (props: IProps) => {
                                   </Select>
                                 </FormControl>
                               </Grid>
-                              <Grid item xs={12} sm={3}>
+                              <Grid item xs={12} sm={2}>
                                 <TextField
                                   fullWidth
                                   label='Sub Title'
@@ -697,6 +769,19 @@ const Redeploy = (props: IProps) => {
                                   </Select>
                                 </FormControl>
                               </Grid>
+                              <Grid item xs={12} sm={1}>
+                                <FormControl fullWidth>
+                                  <IconButton
+                                    onClick={() => {
+                                      deleteMetric(index)
+                                    }}
+                                    aria-label='capture screenshot'
+                                    color='error'
+                                  >
+                                    <Icon icon='mdi:close' />
+                                  </IconButton>
+                                </FormControl>
+                              </Grid>
                             </React.Fragment>
                           )
                         })}
@@ -728,7 +813,7 @@ const Redeploy = (props: IProps) => {
                                   onChange={e => handleChangeInputs(e, index)}
                                 />
                               </Grid>
-                              <Grid item xs={12} sm={9}>
+                              <Grid item xs={12} sm={8}>
                                 <TextField
                                   fullWidth
                                   label='Description'
@@ -737,6 +822,19 @@ const Redeploy = (props: IProps) => {
                                   value={input.description}
                                   onChange={e => handleChangeInputs(e, index)}
                                 />
+                              </Grid>
+                              <Grid item xs={12} sm={1}>
+                                <FormControl fullWidth>
+                                  <IconButton
+                                    onClick={() => {
+                                      deleteInput(index)
+                                    }}
+                                    aria-label='capture screenshot'
+                                    color='error'
+                                  >
+                                    <Icon icon='mdi:close' />
+                                  </IconButton>
+                                </FormControl>
                               </Grid>
                             </React.Fragment>
                           )
@@ -764,7 +862,7 @@ const Redeploy = (props: IProps) => {
                                   onChange={e => handleChangeOutputs(e, index)}
                                 />
                               </Grid>
-                              <Grid item xs={12} sm={9}>
+                              <Grid item xs={12} sm={8}>
                                 <TextField
                                   fullWidth
                                   label='Description'
@@ -773,6 +871,19 @@ const Redeploy = (props: IProps) => {
                                   value={output.description}
                                   onChange={e => handleChangeOutputs(e, index)}
                                 />
+                              </Grid>
+                              <Grid item xs={12} sm={1}>
+                                <FormControl fullWidth>
+                                  <IconButton
+                                    onClick={() => {
+                                      deleteOutput(index)
+                                    }}
+                                    aria-label='capture screenshot'
+                                    color='error'
+                                  >
+                                    <Icon icon='mdi:close' />
+                                  </IconButton>
+                                </FormControl>
                               </Grid>
                             </React.Fragment>
                           )
