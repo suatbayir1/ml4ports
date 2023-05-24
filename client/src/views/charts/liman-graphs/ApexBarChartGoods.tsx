@@ -19,28 +19,11 @@ import * as groupedData2020 from 'src/@fake-db/liman/grouped_2df_2020.json';
 import * as groupedData2021 from 'src/@fake-db/liman/grouped_2df_2021.json';
 import { FormControl, InputLabel } from '@mui/material';
 
-const useDebouncedEffect = (effect, delay, deps) => {
-  const callback = useRef();
-
-  useEffect(() => {
-    callback.current = effect;
-  }, [effect]);
-
-  useEffect(() => {
-    const handler = () => {
-      callback.current();
-    };
-
-    const debounce = setTimeout(handler, delay);
-
-    return () => {
-      clearTimeout(debounce);
-    };
-  }, [delay, ...deps]);
-};
 
 const ApexBarChartGoods = () => {
-  const [selectedGoodKey, setSelectedGoodKey] = useState(13);
+  const [selectedGoodName, setSelectedGoodName] = useState('');
+  const [uniqueGoodsName, setUniqueGoodsName] = useState();
+
   const [filteredData, setFilteredData] = useState([]);
   const [categories, setCategories] = useState([]);
 
@@ -50,99 +33,100 @@ const ApexBarChartGoods = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [series20, setS20] = useState(filteredData.map(item => item['20']));
-  const [series40, setS40] = useState(filteredData.map(item => item['40']));
-  const [series40HC, setS40HC] = useState(filteredData.map(item => item['40 HC']));
-  const allGroupedData = [
-    groupedData2016,
-    groupedData2017,
-    groupedData2018,
-    groupedData2019,
-    groupedData2020,
-    groupedData2021,
-  ].map(data => Array.isArray(data) ? data : data.default);
+  const [series20, setS20] = useState([]);
+  const [series40, setS40] = useState([]);
+  const [series40HC, setS40HC] = useState([]);
 
-  useDebouncedEffect(() => {
-    const yearsToSearch = getYearsInRange(startDate, endDate);
-    const dataToSearch = allGroupedData.filter((data, index) => yearsToSearch.includes(2016 + index));
-    const flattenedData = [].concat.apply([], dataToSearch);
-    getUniqueLineKey(flattenedData);
-    const newFilteredData = filterDataByDateRange(
-      flattenedData.filter(item => item.GOODS_GROUP_KEY == selectedGoodKey),
-      startDate,
-      endDate
-    );
-    setFilteredData(newFilteredData)
-    setCategories(
-      newFilteredData.sort((a, b) => {
-          const aDate = new Date(a.YEAR, a.MONTH - 1, a.DAY);
-          const bDate = new Date(b.YEAR, b.MONTH - 1, b.DAY);
-          return aDate.getTime() - bDate.getTime();
-        })
-        .map(item => `${item.YEAR}-${item.MONTH}-${item.DAY}`)
-    );
-    setS20(newFilteredData.map(item => item['20']));
-    setS40(newFilteredData.map(item => item['40']));
-    setS40HC(newFilteredData.map(item => item['40 HC']));
+  useEffect(() => {
+    const fetchUniqueGoodsName = async () => {
+      const data = await getUniqueGoodsName();
+      setUniqueGoodsName(data);
 
-    setAnnotations(
-      newFilteredData.map((item, index) => ({
-        x: `${item.YEAR}-${item.MONTH}-${item.DAY}`,
-        y: item['20'] + item['40'] + item['40 HC'],
-        label: {
-          borderColor: '#775DD0',
-          style: {
-            color: '#fff',
-            background: '#775DD0',
-            transform: 'rotate(45deg)'
-          },
-          offsetY: -20,
-          text: ` ${item[selectedAnnotationOption]}`,
-        },
-        pointIndex: index,
-      }))
-    );
-  }, 500, [selectedGoodKey, startDate, endDate, selectedAnnotationOption]);
+      localStorage.setItem('uniqueGoodsName', JSON.stringify(data));
+    };
+  
+    fetchUniqueGoodsName();
+  }, []);
 
-  const getUniqueLineKey = (flattenedData) => {
-    let lineKeys = {};
 
-    flattenedData.forEach(item => {
-      lineKeys[item.GOODS_GROUP_KEY] = item.GOODS_NAME;
-    });
+  useEffect(() => {
+    const formattedStartDate = startDate?.toISOString().substring(0, 10);
+    const formattedEndDate = endDate?.toISOString().substring(0, 10);    
+  
+    if (formattedStartDate && formattedEndDate) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/grouped-goods?selectedGoods=${selectedGoodName}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+          if (response.ok) {
+            const data = await response.json();
+            console.log(`http://localhost:3000/grouped-goods?selectedGoods=${selectedGoodName}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+            
+            if(data){
 
-    const uniqueLineKeys = Object.keys(lineKeys).reduce((result, key) => {
-      result[key] = lineKeys[key];
-      return result;
-    }, {});
+              setCategories(data.map(item => new Date(item.MOORAGE_DATE).toISOString().substring(0, 10)));
+              
+              setS20(data.map(item => item["20"]));
+              setS40(data.map(item => item["40"]));
+              setS40HC(data.map(item => item["40 HC"]));
 
-    localStorage.setItem('uniqueLineKeys', JSON.stringify(uniqueLineKeys));
+              setFilteredData(data);
+            }
+            else {
+              console.error('No data was fetched:', response.status);
+            }
 
-    return uniqueLineKeys;
-  };
-
-  const filterDataByDateRange = (data, start, end) => {
-    return data.filter(item => {
-      const itemDate = new Date(item.YEAR, item.MONTH - 1, item.DAY);
-      return itemDate >= start && itemDate <= end;
-    });
-  };
-
-  const getYearsInRange = (start, end) => {
-    let startYear = start.getFullYear();
-    let endYear = startYear;
-
-    if(end != undefined)
-       endYear = end.getFullYear();
-
-    const years = [];
-
-    for (let year = startYear; year <= endYear; year++) {
-      years.push(year);
+          } else {
+            console.error('Failed to fetch data:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
     }
+  }, [selectedGoodName, startDate, endDate]);
+  
+  
+  useEffect(() => {
+    setAnnotations(generateAnnotations());
+  }, [filteredData, selectedAnnotationOption]);
 
-    return years;
-  };
+  const generateAnnotations = () => {
+    const annotations_ = [];
+  
+    if(selectedAnnotationOption != 'NONE'){
+      if (series20.length && series40.length && series40HC.length) {
+        for (let i = 0; i < filteredData.length; i++) {
+          const labelText = filteredData[i] ? ` ${filteredData[i][selectedAnnotationOption]}` : 'N/A';
+          annotations_.push({
+            x: categories[i],
+            y: (series20[i] || 0) + (series40[i] || 0) + (series40HC[i] || 0),
+            borderColor: '#fff',
+            label: {
+              text: labelText,
+              position: 'top',
+              borderColor: '#775DD0',
+              style: {
+                color: '#fff',
+                background: '#775DD0',
+                orientation: '45deg',
+                offsetY: -20,
+              },
+            },
+          });
+        }
+      }
+    }
+  
+    return annotations_;
+  };  
+  
+  const getUniqueGoodsName = async () => {
+    const response = await fetch('http://localhost:3000/unique-goods-name');
+    const data = await response.json();
+    return data;
+};
 
   const handleOnChange = (dates) => {
     const [start, end] = dates;
@@ -240,15 +224,15 @@ const ApexBarChartGoods = () => {
               <FormControl>
                 <InputLabel htmlFor="good-key">Good Group</InputLabel>
                 <Select
-                  value={selectedGoodKey}
-                  onChange={(event) => setSelectedGoodKey(event.target.value)}
+                  value={selectedGoodName}
+                  onChange={(event) => setSelectedGoodName(event.target.value)}
                   inputProps={{
                     name: 'good-key',
                     id: 'good-key',
                   }}
                 >
-                  {Object.entries(JSON.parse(localStorage.getItem('uniqueLineKeys') || '{}')).map(([key, name]) => (
-                    <MenuItem key={key} value={key}>
+                  {Object.entries(JSON.parse(localStorage.getItem('uniqueGoodsName') || '{}')).map(([key, name]) => (
+                    <MenuItem key={key} value={name}>
                       {name}
                     </MenuItem>
                   ))}

@@ -26,7 +26,6 @@ import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import * as groupedData1 from 'src/@fake-db/liman/grouped_1df.json';
 import { FormControlLabel } from '@mui/material'
 
 interface PickerProps {
@@ -36,6 +35,7 @@ interface PickerProps {
 
 const ApexBarChartLineKey = () => {
 
+  const [uniqueLineKeys, setUniqueLineKeys] = useState([]);
   const [selectedLineKey, setSelectedLineKey] = useState(517);
   const [filteredData, setFilteredData] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -46,43 +46,67 @@ const ApexBarChartLineKey = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const [series20, setS20] = useState(filteredData.map(item => item['20']));
-  const [series40, setS40] = useState(filteredData.map(item => item['40']));
-  const [series40HC, setS40HC] = useState(filteredData.map(item => item['40 HC']));
+  const [series20, setS20] = useState([]);
+  const [series40, setS40] = useState([]);
+  const [series40HC, setS40HC] = useState([]);
+
+  useEffect(() => {
+    const fetchUniqueLineKeys = async () => {
+      const data = await getUniqueLineKeys();
+      setUniqueLineKeys(data);
+    };
+
+    fetchUniqueLineKeys();
+  }, []);
 
 
   useEffect(() => {
-    const newFilteredData = filterDataByDateRange(groupedData1.filter(item => item.LINE_NAME === selectedLineKey), startDate, endDate);
-    setFilteredData(newFilteredData);
+    const formattedStartDate = startDate?.toISOString().substring(0, 10);
+    const formattedEndDate = endDate?.toISOString().substring(0, 10);    
+  
+    if (formattedStartDate && formattedEndDate) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/grouped-line?selectedLineKey=${selectedLineKey}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+          if (response.ok) {
+            const data = await response.json();
+            if(data){
 
-    setCategories(
-      newFilteredData.sort((a, b) => {
-          const aDate = new Date(a.YEAR, a.MONTH - 1, a.DAY);
-          const bDate = new Date(b.YEAR, b.MONTH - 1, b.DAY);
-          return aDate.getTime() - bDate.getTime();
-        })
-        .map(item => `${item.YEAR}-${item.MONTH}-${item.DAY}`)
-    );
-    setS20(newFilteredData.map(item => item['20']));
-    setS40(newFilteredData.map(item => item['40']));
-    setS40HC(newFilteredData.map(item => item['40 HC']));
+              setCategories([...new Set(data.map(item => new Date(item.MOORAGE_DATE).toISOString().substring(0, 10)))]);
+              
+              setS20(data.map(item => item["20"]));
+              setS40(data.map(item => item["40"]));
+              setS40HC(data.map(item => item["40 HC"]));
+
+              setFilteredData(data);
+
+            }
+            else {
+              console.error('No data was fetched:', response.status);
+            }
+
+          } else {
+            console.error('Failed to fetch data:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+  
+      fetchData();
+    }
   }, [selectedLineKey, startDate, endDate]);
+  
   
   useEffect(() => {
     setAnnotations(generateAnnotations());
-  }, [filteredData, categories, series20, series40, series40HC]);
+  }, [filteredData]);
   
-  const getUniqueLineKey = () => {
-    const lineKeys = groupedData1.map(item => item.LINE_NAME);
-    return [...new Set(lineKeys)];
-  };
-
-  const filterDataByDateRange = (data, start, end) => {
-    return data.filter(item => {
-      const itemDate = new Date(item.YEAR, item.MONTH - 1, item.DAY);
-      return itemDate >= start && itemDate <= end;
-    });
-  };
+  const getUniqueLineKeys = async () => {
+    const response = await fetch('http://localhost:3000/unique-line-keys');
+    const data = await response.json();
+    return data;
+};
   
   const handleOnChange = (dates: any) => {
     const [start, end] = dates
@@ -95,10 +119,11 @@ const ApexBarChartLineKey = () => {
   
     if (series20.length && series40.length && series40HC.length) {
       for (let i = 0; i < filteredData.length; i++) {
+
         const labelText = filteredData[i] ? `${filteredData[i].SHIP_NAME}` : 'N/A';
         annotations_.push({
           x: categories[i],
-          y: series20[i] + series40[i] + series40HC[i],
+          y: (series20[i] || 0) + (series40[i] || 0) + (series40HC[i] || 0),
           borderColor: '#fff',
           label: {
             text: labelText,
@@ -114,7 +139,7 @@ const ApexBarChartLineKey = () => {
         });
       }
     }
-  
+    
     return annotations_;
   };
   
@@ -199,9 +224,9 @@ const ApexBarChartLineKey = () => {
                 id: 'line-key',
               }}
             >
-              {getUniqueLineKey().map((lineKeys) => (
-                <MenuItem key={lineKeys} value={lineKeys}>
-                  {lineKeys}
+              {uniqueLineKeys.map((lineKey) => (
+                <MenuItem key={lineKey} value={lineKey}>
+                  {lineKey}
                 </MenuItem>
               ))}
             </Select>

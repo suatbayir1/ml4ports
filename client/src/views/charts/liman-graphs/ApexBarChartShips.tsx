@@ -41,51 +41,58 @@ const ApexBarChartShips = () => {
   const [series40, setS40] = useState([]);
   const [series40HC, setS40HC] = useState([]);
 
-  
   useEffect(() => {
-    const fetchAndUpdateData = async () => {
-      const newFilteredData = await fetchData(selectedShip);
-      setFilteredData(newFilteredData);
-      setCategories(
-        newFilteredData
-          .sort((a, b) => {
-            const aDate = new Date(a.YEAR, a.MONTH - 1, a.DAY);
-            const bDate = new Date(b.YEAR, b.MONTH - 1, b.DAY);
-            return aDate.getTime() - bDate.getTime();
-          })
-          .map((item) => `${item.YEAR}-${item.MONTH}-${item.DAY}`)
-      );
-      setS20(newFilteredData.map((item) => item['20']));
-      setS40(newFilteredData.map((item) => item['40']));
-      setS40HC(newFilteredData.map((item) => item['40 HC']));
+    const fetchUniqueShipNames = async () => {
+      const data = await getUniqueShipNames();
+      setUniqueShipNames(data);
     };
+
+    fetchUniqueShipNames();
+  }, []);
+
+
+  useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`http://localhost:3000/grouped-ship?selectedShipName=${selectedShip}`);
+          if (response.ok) {
+            const data = await response.json();
+            
+            if(data){
+
+              setCategories([...new Set(data.map(item => new Date(item.MOORAGE_DATE).toISOString().substring(0, 10)))]);
+              
+              setS20(data.map(item => item["20"]));
+              setS40(data.map(item => item["40"]));
+              setS40HC(data.map(item => item["40 HC"]));
+
+              setFilteredData(data);
+            }
+            else {
+              console.error('No data was fetched:', response.status);
+            }
+
+          } else {
+            console.error('Failed to fetch data:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
   
-    fetchAndUpdateData();
+      fetchData();
   }, [selectedShip]);
   
   
   useEffect(() => {
     setAnnotations(generateAnnotations());
-  }, [filteredData, categories, series20, series40, series40HC, selectedAnnotationOption]);
+  }, [filteredData, selectedAnnotationOption]);
   
-  useEffect(() => {
-    const fetchAndUpdateUniqueShipNames = async () => {
-      const shipNames = await fetchUniqueShipNames();
-      setUniqueShipNames(shipNames);
-    };
-  
-    fetchAndUpdateUniqueShipNames();
-  }, []);
-
-  const fetchData = (shipName) => {
-    return data.filter((item) => item.SHIP_NAME === shipName);
-  };
-  
-  const fetchUniqueShipNames = () => {
-    const shipNames = data.map((item) => item.SHIP_NAME);
-    return [...new Set(shipNames)];
-  };
-
+  const getUniqueShipNames= async () => {
+    const response = await fetch('http://localhost:3000/unique-ship-names');
+    const data = await response.json();
+    return data;
+};
 
   const generateAnnotations = () => {
     const annotations_ = [];
@@ -96,7 +103,7 @@ const ApexBarChartShips = () => {
           const labelText = filteredData[i] ? ` ${filteredData[i][selectedAnnotationOption]}` : 'N/A';
           annotations_.push({
             x: categories[i],
-            y: series20[i] + series40[i] + series40HC[i],
+            y: (series20[i] || 0) + (series40[i] || 0) + (series40HC[i] || 0),
             borderColor: '#fff',
             label: {
               text: labelText,
