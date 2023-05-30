@@ -67,7 +67,7 @@ const ApexBarChartLineKey = () => {
     if (formattedStartDate && formattedEndDate) {
       const fetchData = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/grouped-line?selectedLineKey=${selectedLineKey}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+          const response = await fetch(`http://localhost:5000/grouped-line?selectedLineKey=${selectedLineKey}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
           if (response.ok) {
             const data = await response.json();
             if(data){
@@ -103,7 +103,7 @@ const ApexBarChartLineKey = () => {
   }, [filteredData]);
   
   const getUniqueLineKeys = async () => {
-    const response = await fetch('http://localhost:3000/unique-line-keys');
+    const response = await fetch('http://localhost:5000/unique-line-keys');
     const data = await response.json();
     return data;
 };

@@ -56,10 +56,10 @@ const ApexBarChartGoods = () => {
     if (formattedStartDate && formattedEndDate) {
       const fetchData = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/grouped-goods?selectedGoods=${selectedGoodName}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+          const response = await fetch(`http://localhost:5000/grouped-goods?selectedGoods=${selectedGoodName}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
           if (response.ok) {
             const data = await response.json();
-            console.log(`http://localhost:3000/grouped-goods?selectedGoods=${selectedGoodName}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
+            5000(`http://localhost:5000/grouped-goods?selectedGoods=${selectedGoodName}&startDate=${formattedStartDate}&endDate=${formattedEndDate}`);
             
             if(data){
 
@@ -123,7 +123,7 @@ const ApexBarChartGoods = () => {
   };  
   
   const getUniqueGoodsName = async () => {
-    const response = await fetch('http://localhost:3000/unique-goods-name');
+    const response = await fetch('http://localhost:5000/unique-goods-name');
     const data = await response.json();
     return data;
 };

@@ -24,7 +24,6 @@ import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import data from 'src/@fake-db/liman/grouped_1df.json';
 
 
 const ApexBarChartShips = () => {
@@ -44,6 +43,7 @@ const ApexBarChartShips = () => {
   useEffect(() => {
     const fetchUniqueShipNames = async () => {
       const data = await getUniqueShipNames();
+      console.log(data);
       setUniqueShipNames(data);
     };
 
@@ -54,7 +54,7 @@ const ApexBarChartShips = () => {
   useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await fetch(`http://localhost:3000/grouped-ship?selectedShipName=${selectedShip}`);
+          const response = await fetch(`http://localhost:5000/grouped-ship?selectedShipName=${selectedShip}`);
           if (response.ok) {
             const data = await response.json();
             
@@ -89,7 +89,7 @@ const ApexBarChartShips = () => {
   }, [filteredData, selectedAnnotationOption]);
   
   const getUniqueShipNames= async () => {
-    const response = await fetch('http://localhost:3000/unique-ship-names');
+    const response = await fetch('http://localhost:5000/unique-ship-names');
     const data = await response.json();
     return data;
 };
