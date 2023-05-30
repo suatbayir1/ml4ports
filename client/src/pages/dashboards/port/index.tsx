@@ -1,5 +1,8 @@
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Box from '@mui/material/Box'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -10,6 +13,10 @@ import { CardStatsCharacterProps } from 'src/@core/components/card-statistics/ty
 // ** Custom Components Imports
 import CardStatisticsCharacter from 'src/@core/components/card-statistics/card-stats-with-image'
 import CardStatisticsVerticalComponent from 'src/@core/components/card-statistics/card-stats-vertical'
+import ApexBarChartShips from 'src/views/charts/liman-graphs/ApexBarChartShips'
+import ApexBarChartLineKey from 'src/views/charts/liman-graphs/ApexBarChartLineKey'
+import ApexBarChartGoods from 'src/views/charts/liman-graphs/ApexBarChartGoods'
+import ApexBarChartCompany from 'src/views/charts/liman-graphs/ApexBarChartCompany'
 
 // ** Styled Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
@@ -29,7 +36,6 @@ import CrmActivityTimeline from 'src/views/dashboards/crm/CrmActivityTimeline'
 // import ApexDonutChart from 'src/views/charts/apex-charts/ApexDonutChart'
 import ApexColumnChart from 'src/components/charts/apexcharts/ApexColumnChart'
 import ApexLineForecastChart from 'src/components/charts/apexcharts/ApexLineForecastChart'
-
 
 // ** Fake DB Imports
 import goods from 'src/@fake-db/liman/goods'
@@ -87,12 +93,33 @@ const series = [
   }
 ]
 
+function TabPanel(props) {
+  const { children, value, index } = props
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
+      style={{ display: value === index ? 'block' : 'none' }}
+    >
+      <Box>{children}</Box>
+    </div>
+  )
+}
+
 const PortDashboard = () => {
   const { t, i18n } = useTranslation()
 
-  const ability = useContext(AbilityContext)  
+  const ability = useContext(AbilityContext)
   const [endDate, setEndDate] = useState<any>(null)
   const [startDate, setStartDate] = useState<any>(null)
+  const [currentTab, setCurrentTab] = useState(0)
+
+  const handleTabChange = (event, newValue) => {
+    setCurrentTab(newValue)
+  }
 
   const handleOnChange = (dates: any) => {
     const [start, end] = dates
@@ -128,7 +155,6 @@ const PortDashboard = () => {
     )
   })
 
-
   return (
     <ApexChartWrapper>
       <DatePickerWrapper>
@@ -137,13 +163,13 @@ const PortDashboard = () => {
             <ApexColumnChart series={series} />
           </Grid>
           <Grid item xs={12}>
-            <ApexLineForecastChart series={series} title={t("Export-Import Forecast")} />
+            <ApexLineForecastChart series={series} title={t('Export-Import Forecast')} />
           </Grid>
           {/* ======================= */}
-            <Grid item xs={12}>
-              <Card>
+          <Grid item xs={12}>
+            <Card>
               <CardHeader
-                title={t("ContainersGraphTitle")}
+                title={t('ContainersGraphTitle')}
                 action={
                   <DatePicker
                     selectsRange
@@ -152,53 +178,93 @@ const PortDashboard = () => {
                     startDate={startDate}
                     selected={startDate}
                     onChange={handleOnChange}
-                    placeholderText={t("DatePicker")}
+                    placeholderText={t('DatePicker')}
                     customInput={<CustomInput start={startDate as Date | number} end={endDate as Date | number} />}
-                  />}
-                />
-                <CardContent>
-                  <Grid item container spacing={6} xs={12}>
-                    <Grid item item md={4} xs={12}>
-                      <ApexDonutChart containers={containers} regime_names={regime_names} startDate={startDate} endDate={endDate}/>
-                    </Grid>
-                    <Grid item item md={8} xs={12}>
-                      <ApexLineChartContainers containers={containers} regime_names={regime_names} startDate={startDate} endDate={endDate}/>
-                    </Grid>
+                  />
+                }
+              />
+              <CardContent>
+                <Grid item container spacing={6} xs={12}>
+                  <Grid item item md={4} xs={12}>
+                    <ApexDonutChart
+                      containers={containers}
+                      regime_names={regime_names}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
                   </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-              {/* <Grid item xs={12}>
+                  <Grid item item md={8} xs={12}>
+                    <ApexLineChartContainers
+                      containers={containers}
+                      regime_names={regime_names}
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+          {/* <Grid item xs={12}>
                 <GoodsApexCharts goods={goods} groups={group_name_key} />
               </Grid> */}
-              <Grid item xs={12}>
-                <ApexColumnChartGoods goods={goods} title={"Number of goods"}/>
-              </Grid>
-              <Grid item xs={12}>
-                <ApexLineChart goods={goods} groups={group_name_key} title={"Number of goods"}/>
-              </Grid>
-              <Grid item xs={12}>
-                <ApexHeatmapChart lines={lines} title={"Discharge Lines"}/>
-              </Grid>
-              <Grid item container spacing={6} xs={12}>
+
+          <Grid item xs={12}>
+            {/* Add the tabs component */}
+            <Tabs value={currentTab} onChange={handleTabChange}>
+              <Tab label='Ships' />
+              <Tab label='Line Keys' />
+              <Tab label='Goods' />
+              <Tab label='Companies' />
+            </Tabs>
+
+            {/* Add the tab panels */}
+            <TabPanel value={currentTab} index={0}>
+              <ApexBarChartShips />
+            </TabPanel>
+            <TabPanel value={currentTab} index={1}>
+              <ApexBarChartLineKey />
+            </TabPanel>
+            <TabPanel value={currentTab} index={2}>
+              <ApexBarChartGoods />
+            </TabPanel>
+            <TabPanel value={currentTab} index={3}>
+              <ApexBarChartCompany />
+            </TabPanel>
+          </Grid>
+
+          <Grid item xs={12}>
+            <ApexColumnChartGoods goods={goods} title={'Number of goods'} />
+          </Grid>
+          <Grid item xs={12}>
+            <ApexLineChart goods={goods} groups={group_name_key} title={'Number of goods'} />
+          </Grid>
+          <Grid item xs={12}>
+            <ApexHeatmapChart lines={lines} title={'Discharge Lines'} />
+          </Grid>
+          <Grid item container spacing={6} xs={12}>
+            <Grid item md={6} xs={12}>
+              <Card>
+                <CardHeader title='Common' />
+                <CardContent>
+                  <Typography sx={{ mb: 4 }}>No ability is required to view this card</Typography>
+                  <Typography sx={{ color: 'primary.main' }}>
+                    This card is visible to 'user' and 'admin' both
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            {ability?.can('read', 'liman-graphs-footer') ? (
               <Grid item md={6} xs={12}>
                 <Card>
-                  <CardHeader title='Common' />
+                  <CardHeader title='Analytics' />
                   <CardContent>
-                    <Typography sx={{ mb: 4 }}>No ability is required to view this card</Typography>
-                    <Typography sx={{ color: 'primary.main' }}>This card is visible to 'user' and 'admin' both</Typography>
+                    <Typography sx={{ mb: 4 }}>
+                      User with 'Analytics' subject's 'Read' ability can view this card
+                    </Typography>
+                    <Typography sx={{ color: 'error.main' }}>This card is visible to 'admin' only</Typography>
                   </CardContent>
                 </Card>
-              </Grid>
-              {ability?.can('read', 'liman-graphs-footer') ? (
-                <Grid item md={6} xs={12}>
-                  <Card>
-                    <CardHeader title='Analytics' />
-                    <CardContent>
-                      <Typography sx={{ mb: 4 }}>User with 'Analytics' subject's 'Read' ability can view this card</Typography>
-                      <Typography sx={{ color: 'error.main' }}>This card is visible to 'admin' only</Typography>
-                    </CardContent>
-                  </Card>
               </Grid>
             ) : null}
           </Grid>
