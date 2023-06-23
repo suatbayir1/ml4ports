@@ -11,12 +11,6 @@ import DatePicker from 'react-datepicker'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import * as groupedData2016 from 'src/@fake-db/liman/grouped_2df_2016.json'
-import * as groupedData2017 from 'src/@fake-db/liman/grouped_2df_2017.json'
-import * as groupedData2018 from 'src/@fake-db/liman/grouped_2df_2018.json'
-import * as groupedData2019 from 'src/@fake-db/liman/grouped_2df_2019.json'
-import * as groupedData2020 from 'src/@fake-db/liman/grouped_2df_2020.json'
-import * as groupedData2021 from 'src/@fake-db/liman/grouped_2df_2021.json'
 import { FormControl, InputLabel } from '@mui/material'
 
 // ** Helpers
@@ -63,7 +57,8 @@ const ApexBarChartGoods = () => {
             )
           )
           if (response.ok) {
-            const data = await response.json()
+            let data = await response.json()
+            data = data.data
 
             if (data) {
               setCategories(data.map(item => new Date(item.MOORAGE_DATE).toISOString().substring(0, 10)))
@@ -125,7 +120,7 @@ const ApexBarChartGoods = () => {
   const getUniqueGoodsName = async () => {
     const response = await fetch(getUrl('container/unique-goods-name'))
     const data = await response.json()
-    return data
+    return data.data
   }
 
   const handleOnChange = dates => {

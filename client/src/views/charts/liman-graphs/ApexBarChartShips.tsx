@@ -1,18 +1,13 @@
 // ** React Imports
-import { forwardRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
-import TextField from '@mui/material/TextField'
-import { useTheme } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import InputAdornment from '@mui/material/InputAdornment'
 
 // ** Third Party Imports
-import format from 'date-fns/format'
 import { ApexOptions } from 'apexcharts'
-import DatePicker from 'react-datepicker'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
@@ -21,16 +16,13 @@ import InputLabel from '@mui/material/InputLabel'
 // ** Helpers
 import { getUrl } from 'src/helpers/api/getter'
 
-// ** Types
-import { DateType } from 'src/types/forms/reactDatepickerTypes'
-
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 
 const ApexBarChartShips = () => {
   const [selectedShip, setSelectedShip] = useState('ADELHEID-S.')
   const [filteredData, setFilteredData] = useState([])
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories] = useState<any[]>([])
 
   const [selectedAnnotationOption, setSelectedAnnotationOption] = useState('LINE_KEY')
   const [annotations, setAnnotations] = useState([])
@@ -43,7 +35,6 @@ const ApexBarChartShips = () => {
   useEffect(() => {
     const fetchUniqueShipNames = async () => {
       const data = await getUniqueShipNames()
-      console.log(data)
       setUniqueShipNames(data)
     }
 
@@ -55,7 +46,8 @@ const ApexBarChartShips = () => {
       try {
         const response = await fetch(getUrl(`container/grouped-ship?selectedShipName=${selectedShip}`))
         if (response.ok) {
-          const data = await response.json()
+          let data = await response.json()
+          data = data.data
 
           if (data) {
             setCategories([...new Set(data.map(item => new Date(item.MOORAGE_DATE).toISOString().substring(0, 10)))])
@@ -86,7 +78,7 @@ const ApexBarChartShips = () => {
   const getUniqueShipNames = async () => {
     const response = await fetch(getUrl('container/unique-ship-names'))
     const data = await response.json()
-    return data
+    return data.data
   }
 
   const generateAnnotations = () => {

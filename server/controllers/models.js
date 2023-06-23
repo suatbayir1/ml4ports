@@ -54,11 +54,6 @@ const redeployModelMetadata = asyncErrorWrapper(async (req, res, next) => {
 const getTrainedModelsMetadata = asyncErrorWrapper(async (req, res, next) => {
   const { isPassed, lastUpdateTime, dataInMemory } = res.locals;
   const fromDate = getFromDate(isPassed, lastUpdateTime);
-  // let fromDate = new Date(2019, 3, 1).toISOString();
-
-  // if (isPassed) {
-  //   fromDate = new Date(lastUpdateTime).toISOString();
-  // }
 
   const models = await Model.find({
     updatedAt: { $gte: fromDate },

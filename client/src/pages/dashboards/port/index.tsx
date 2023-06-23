@@ -62,26 +62,6 @@ interface PickerProps {
   end: Date | number
 }
 
-const data: CardStatsCharacterProps[] = [
-  {
-    stats: '13.7k',
-    title: 'Ratings',
-    trendNumber: '+38%',
-    chipColor: 'primary',
-    chipText: 'Year of 2022',
-    src: '/images/cards/pose_f9.png'
-  },
-  {
-    stats: '24.5k',
-    trend: 'negative',
-    title: 'Sessions',
-    trendNumber: '-22%',
-    chipText: 'Last Week',
-    chipColor: 'secondary',
-    src: '/images/cards/pose_m18.png'
-  }
-]
-
 const series = [
   {
     name: 'İhracat',
@@ -93,7 +73,7 @@ const series = [
   }
 ]
 
-function TabPanel(props) {
+function TabPanel(props: any) {
   const { children, value, index } = props
 
   return (
@@ -117,7 +97,7 @@ const PortDashboard = () => {
   const [startDate, setStartDate] = useState<any>(null)
   const [currentTab, setCurrentTab] = useState(0)
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (event: any, newValue: any) => {
     setCurrentTab(newValue)
   }
 
@@ -185,7 +165,7 @@ const PortDashboard = () => {
               />
               <CardContent>
                 <Grid item container spacing={6} xs={12}>
-                  <Grid item item md={4} xs={12}>
+                  <Grid item md={4} xs={12}>
                     <ApexDonutChart
                       containers={containers}
                       regime_names={regime_names}
@@ -193,7 +173,7 @@ const PortDashboard = () => {
                       endDate={endDate}
                     />
                   </Grid>
-                  <Grid item item md={8} xs={12}>
+                  <Grid item md={8} xs={12}>
                     <ApexLineChartContainers
                       containers={containers}
                       regime_names={regime_names}

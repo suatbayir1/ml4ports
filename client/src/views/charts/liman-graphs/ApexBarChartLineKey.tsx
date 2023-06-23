@@ -4,7 +4,6 @@ import { forwardRef, useEffect, useState } from 'react'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import TextField from '@mui/material/TextField'
-import { useTheme } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
@@ -22,9 +21,6 @@ import Checkbox from '@mui/material/Checkbox'
 
 // ** Helpers
 import { getUrl } from 'src/helpers/api/getter'
-
-// ** Types
-import { DateType } from 'src/types/forms/reactDatepickerTypes'
 
 // ** Component Import
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
@@ -72,7 +68,8 @@ const ApexBarChartLineKey = () => {
             )
           )
           if (response.ok) {
-            const data = await response.json()
+            let data = await response.json()
+            data = data.data
             if (data) {
               setCategories([...new Set(data.map(item => new Date(item.MOORAGE_DATE).toISOString().substring(0, 10)))])
 
@@ -103,7 +100,8 @@ const ApexBarChartLineKey = () => {
   const getUniqueLineKeys = async () => {
     const response = await fetch(getUrl('container/unique-line-keys'))
     const data = await response.json()
-    return data
+
+    return data.data
   }
 
   const handleOnChange = (dates: any) => {
