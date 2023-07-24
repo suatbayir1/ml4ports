@@ -10,6 +10,7 @@ export type ModelOutput = {
 
 export type MLModelType = {
   modelName: string
+  modelJob: string
   trainer: string
   trainDate: Date
   accuracy: number
@@ -22,5 +23,6 @@ export type MLModelType = {
   subModels?: Object[]
   inputs: ModelInput[]
   outputs: ModelOutput[]
+  modelPath: string
   _id?: string
 }

@@ -32,7 +32,7 @@ const ModelMetadataDialog = dynamic(() => import('src/components/dialogs/models/
 const UsedFeaturesDialog = dynamic(() => import('src/components/dialogs/models/UsedFeaturesDialog'), { ssr: false })
 const SubModelsDialog = dynamic(() => import('src/components/dialogs/models/SubModelsDialog'), { ssr: false })
 const RedeployDialog = dynamic(() => import('src/components/dialogs/models/RedeployDialog'), { ssr: false })
-
+const MakePredictionDialog = dynamic(()=> import('src/components/dialogs/models/MakePredictionDialog'), { ssr: false })
 interface DataType {
   title: string
   imgSrc: string
@@ -119,6 +119,8 @@ const MachineLearningModelInfoCard = (props: IProps) => {
       case 'Recall':
         src = '/images/cards/logo-aviato.png'
         break
+      default:
+        src = '/images/cards/graph-bar.png'
     }
     return src
   }
@@ -135,6 +137,11 @@ const MachineLearningModelInfoCard = (props: IProps) => {
         handleClose={() => setCurrentOverlay('none')}
         model={model}
         type={props.type}
+      />
+      <MakePredictionDialog 
+        open={currentOverlay === 'prediction' ? true : false}
+        model={model}
+        handleClose={() => setCurrentOverlay('none')}
       />
 
       <Card sx={{ border: model.modelType === 'Ensemble' ? '1px solid red' : '1px solid blue' }}>
@@ -183,6 +190,15 @@ const MachineLearningModelInfoCard = (props: IProps) => {
           ) : (
             <h2>No metrics created</h2>
           )}
+           <Button
+            onClick={() => setCurrentOverlay('prediction')}
+            fullWidth
+            variant='contained'
+            sx={{ mt: 4.5 }}
+            endIcon={<Icon icon='mdi:abacus' />}
+          >
+            Make Prediction
+          </Button>
 
           <Button
             onClick={() => setCurrentOverlay('redeploy')}
