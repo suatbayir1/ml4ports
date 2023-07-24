@@ -81,7 +81,13 @@ LEFT JOIN PORTDATA.DBO.V_TBL_PORTS LP1 ON LP1.PORT_KEY = LBP.DISC_PORT_KEY 
 where CJO_F.SUCCESS_DATE_TIME >= '${time}'
 group by CT.DESCRIPTION `;
 
+const getDailyContainers = (date) => `
+SELECT * FROM V_TBL_DAILY_TEUS DT
+INNER JOIN V_TBL_DAILY_TEU_DETAILS DTD ON DTD.DAILY_TEU_KEY = DT.DAILY_TEU_KEY
+WHERE DT.DDATE = '${date}'`;
+
 module.exports = {
   getContainersQuery,
   getNumberOfGroupsByContainerType,
+  getDailyContainers
 };

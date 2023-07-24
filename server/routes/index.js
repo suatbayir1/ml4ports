@@ -6,10 +6,12 @@ const router = express.Router();
 const test = require("./test");
 const container = require("./container");
 const models = require("./models");
+const portSummary = require("./portSummary")
 
 // Routers
 router.use("/test", test);
 router.use("/container", container);
 router.use("/model", models);
+router.use("/portSummary", portSummary)
 
 module.exports = router;
