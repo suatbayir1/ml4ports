@@ -36,6 +36,7 @@ import CrmActivityTimeline from 'src/views/dashboards/crm/CrmActivityTimeline'
 // import ApexDonutChart from 'src/views/charts/apex-charts/ApexDonutChart'
 import ApexColumnChart from 'src/components/charts/apexcharts/ApexColumnChart'
 import ApexLineForecastChart from 'src/components/charts/apexcharts/ApexLineForecastChart'
+import PortsDailyStatusDialog from 'src/components/dialogs/port/PortsDailyStatusDialog'
 
 // ** Fake DB Imports
 import goods from 'src/@fake-db/liman/goods'
@@ -47,7 +48,7 @@ import containers from 'src/@fake-db/liman/containers'
 import { forwardRef, useContext, useState } from 'react'
 import { AbilityContext } from 'src/layouts/components/acl/Can'
 import { format } from 'date-fns'
-import { Card, CardContent, CardHeader, InputAdornment, TextField, Typography } from '@mui/material'
+import { Button, Card, CardContent, CardHeader, InputAdornment, TextField, Typography } from '@mui/material'
 import { DatePicker } from '@mui/lab'
 
 import ApexLineChartContainers from 'src/views/charts/liman-graphs/ApexLineChartContainers'
@@ -96,6 +97,7 @@ const PortDashboard = () => {
   const [endDate, setEndDate] = useState<any>(null)
   const [startDate, setStartDate] = useState<any>(null)
   const [currentTab, setCurrentTab] = useState(0)
+  const [portDailyStatusOverlay, setPortDailyStatusOverlay] = useState<boolean>(false)
 
   const handleTabChange = (event: any, newValue: any) => {
     setCurrentTab(newValue)
@@ -139,6 +141,15 @@ const PortDashboard = () => {
     <ApexChartWrapper>
       <DatePickerWrapper>
         <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <Button variant='contained' startIcon={<Icon icon='streamline:travel-places-anchor-anchor-marina-harbor-port' />} onClick={() => setPortDailyStatusOverlay(!portDailyStatusOverlay)}>
+              Port's daily status
+            </Button>
+            <PortsDailyStatusDialog 
+              open={portDailyStatusOverlay}
+              handleClose={()=>setPortDailyStatusOverlay(false)}
+            />
+          </Grid>
           <Grid item xs={12}>
             <ApexColumnChart series={series} />
           </Grid>
