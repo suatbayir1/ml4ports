@@ -6,10 +6,20 @@ from pydantic import BaseModel
 from helpers import prepare_data
 from data.good_groups import goods_groups
 from data.company_groups import company_groups
+from fastapi.middleware.cors import CORSMiddleware
 
 # PYTHONPATH=.. uvicorn main:app --reload
 
 app = FastAPI()
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class TdayInput(BaseModel):
     # name: str
@@ -28,6 +38,7 @@ class TdayInput(BaseModel):
     load_line: List[str]
     good: List[str]
     company: List[str]
+    model_path: str
 
 class GumrukInput(BaseModel):
     regime_key: List[int]
@@ -43,6 +54,7 @@ class GumrukInput(BaseModel):
     load_line: List[str]
     good: List[str]
     company: List[str]
+    model_path: str
 
 async def load_model(model_path):
     # Load your machine learning model
@@ -78,7 +90,8 @@ def get_good_groups():
 async def make_tday_prediction(tday_input: TdayInput):
     
     # Wait for the model to be loaded
-    tday_model = await load_model("./models/randomforest_model.joblib")
+    print(tday_input.model_path)
+    tday_model = await load_model(f"./models/{tday_input.model_path}") # randomforest_model.joblib
     # tday_model = joblib.load("./models/randomforest_model.joblib")
     df = prepare_data(tday_input)
     prediction = tday_model.predict(df)
@@ -97,7 +110,8 @@ async def make_tday_prediction(tday_input: TdayInput):
 async def make_gumruk_prediction(gumruk_input: GumrukInput):
     
     # Wait for the model to be loaded    
-    gumruk_model, scoring = await load_gumruk_model('./models/gumruk_ensemble_model.pkl')
+    print(gumruk_input.model_path)
+    gumruk_model, scoring = await load_gumruk_model(f'./models/{gumruk_input.model_path}') #gumruk_ensemble_model.pkl
     # tday_model = joblib.load("./models/randomforest_model.joblib")
     df = prepare_data(gumruk_input)
     predictions = gumruk_model.predict_proba(df.drop(["FIRST_SERVICE_NAME", "C_KIND"], axis=1))[:, 1]
@@ -113,4 +127,4 @@ async def make_gumruk_prediction(gumruk_input: GumrukInput):
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=7777)
+    uvicorn.run("main:app", host="127.0.0.1", port=7777, reload=True, workers=2)
