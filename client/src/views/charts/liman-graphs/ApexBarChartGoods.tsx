@@ -226,7 +226,7 @@ const ApexBarChartGoods = () => {
                   id: 'good-key'
                 }}
               >
-                {Object.entries(JSON.parse(localStorage.getItem('uniqueGoodsName') || '{}')).map(([key, name]) => (
+                {Object.entries(JSON.parse((localStorage.getItem('uniqueGoodsName')!== "undefined" ? localStorage.getItem('uniqueGoodsName') : undefined) || '{}')).map(([key, name]) => (
                   <MenuItem key={key} value={name}>
                     {name}
                   </MenuItem>
