@@ -3,7 +3,6 @@ const asyncErrorWrapper = require("express-async-handler");
 const redisClient = require("../helpers/database/connectRedis");
 
 // Helpers
-const { poolPromise, sql } = require("../helpers/database/connectMsSQL");
 const {
   groupItemsByType,
   groupItemsByTypeGoods,
