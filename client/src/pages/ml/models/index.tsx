@@ -9,7 +9,7 @@ import MachineLearningModelInfoCard from 'src/components/cards/advanced/MachineL
 
 // ** Store & Actions Imports
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchData } from 'src/store/apps/model'
+import { fetchData, fetchDistributionOfTotalShipCountByDays } from 'src/store/apps/model'
 
 // ** Types Imports
 import { RootState, AppDispatch } from 'src/store'
@@ -24,10 +24,10 @@ const index = (props: Props) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.model)
-  console.log(store.models)
+
   useEffect(() => {
-    console.log('fetch')
     dispatch(fetchData())
+    dispatch(fetchDistributionOfTotalShipCountByDays())
   }, [dispatch])
 
   return (

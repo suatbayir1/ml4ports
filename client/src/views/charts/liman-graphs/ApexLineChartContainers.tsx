@@ -1,5 +1,5 @@
 // ** MUI Imports
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -19,77 +19,69 @@ import { ApexOptions } from 'apexcharts'
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
-import LineChartProps from './props/LineChartProps';
-import ContainerChartProps from './props/ContainerChartProps';
-import { format } from 'date-fns';
-import InputAdornment from '@mui/material/InputAdornment';
+import LineChartProps from './props/LineChartProps'
+import ContainerChartProps from './props/ContainerChartProps'
+import { format } from 'date-fns'
+import InputAdornment from '@mui/material/InputAdornment'
 
 interface PickerProps {
   start: Date | number
   end: Date | number
 }
 
-const ApexLineChartContainers = ({containers, regime_names , startDate, endDate}:ContainerChartProps) => {
+const ApexLineChartContainers = ({ containers, regime_names, startDate, endDate }: ContainerChartProps) => {
   // ** Hook
-  const theme = useTheme();
+  const theme = useTheme()
   const { t, i18n } = useTranslation()
   const [selectedOption, setSelectedOption] = useState<number>(-1)
   const [series, setSeries] = useState<any>([])
 
-  const selectorOptions = [{REGEME_KEY: -1, DESCRIPTION: "All"}, ...regime_names];
+  const selectorOptions = [{ REGEME_KEY: -1, DESCRIPTION: 'All' }, ...regime_names]
 
-  const handleOptionChange = (value : string | null) => {
-    console.log(value);
-    setSelectedOption(selectorOptions.find(item=>item.DESCRIPTION == value) ?.REGEME_KEY|| -1);
-    console.log(selectedOption);
-    
-  };
-  
-
-  function createSeries() {
-    const groupedData = containers.filter(item=>item.REGEME_KEY == selectedOption || selectedOption == -1).reduce((acc, cur) => {
-      const groupDesc = cur.DESCRIPTION;
-      const date = cur.date;
-      const count = cur.count;
-      if (!acc[groupDesc]) {
-        acc[groupDesc] = {};
-      }
-      if (!acc[groupDesc][date]) {
-        acc[groupDesc][date] = 0;
-      }
-      acc[groupDesc][date] += count;
-      return acc;
-    }, {});
-    
-    const dates = getCategories();
-
-    const result = Object.entries(groupedData)
-    .map(([groupDesc, datesObj]) => {
-      const data = dates.map(date => datesObj[date] || 0);
-      return { name: groupDesc, data };
-    });
-
-    console.log(groupedData);
-    
-
-    setSeries(result);
+  const handleOptionChange = (value: string | null) => {
+    setSelectedOption(selectorOptions.find(item => item.DESCRIPTION == value)?.REGEME_KEY || -1)
   }
 
+  function createSeries() {
+    const groupedData = containers
+      .filter(item => item.REGEME_KEY == selectedOption || selectedOption == -1)
+      .reduce((acc, cur) => {
+        const groupDesc = cur.DESCRIPTION
+        const date = cur.date
+        const count = cur.count
+        if (!acc[groupDesc]) {
+          acc[groupDesc] = {}
+        }
+        if (!acc[groupDesc][date]) {
+          acc[groupDesc][date] = 0
+        }
+        acc[groupDesc][date] += count
+        return acc
+      }, {})
+
+    const dates = getCategories()
+
+    const result = Object.entries(groupedData).map(([groupDesc, datesObj]) => {
+      const data = dates.map(date => datesObj[date] || 0)
+      return { name: groupDesc, data }
+    })
+
+    setSeries(result)
+  }
 
   function getCategories() {
-    let uniqueDates = [...new Set(containers.map(containers => containers.date))];
+    let uniqueDates = [...new Set(containers.map(containers => containers.date))]
 
     if (startDate || endDate) {
       uniqueDates = uniqueDates.filter(date => {
-        if (startDate && new Date(date) < startDate) return false;
-        if (endDate && new Date(date) > endDate) return false;
-        return true;
-      });
+        if (startDate && new Date(date) < startDate) return false
+        if (endDate && new Date(date) > endDate) return false
+        return true
+      })
     }
-    return uniqueDates.sort();
+    return uniqueDates.sort()
   }
 
-  
   useEffect(() => createSeries(), [containers, selectedOption, startDate, endDate])
 
   const options: ApexOptions = {
@@ -139,7 +131,7 @@ const ApexLineChartContainers = ({containers, regime_names , startDate, endDate}
       labels: {
         style: { colors: theme.palette.text.disabled }
       },
-      categories: getCategories(),
+      categories: getCategories()
     }
   }
 
@@ -195,15 +187,15 @@ const ApexLineChartContainers = ({containers, regime_names , startDate, endDate}
         // }}
         action={
           <Autocomplete
-                  sx={{ width: 400 }}
-                  options={selectorOptions.map(item=>item.DESCRIPTION)}
-                  defaultValue={t("All")}
-                  id='autocomplete-outlined'
-                  renderInput={params => <TextField {...params} label={t("Container Type")} />}
-                  onChange={(event: any, newValue: string | null) => {
-                    handleOptionChange(newValue);
-                  }}
-                />
+            sx={{ width: 400 }}
+            options={selectorOptions.map(item => item.DESCRIPTION)}
+            defaultValue={t('All')}
+            id='autocomplete-outlined'
+            renderInput={params => <TextField {...params} label={t('Container Type')} />}
+            onChange={(event: any, newValue: string | null) => {
+              handleOptionChange(newValue)
+            }}
+          />
         }
       />
       <CardContent>

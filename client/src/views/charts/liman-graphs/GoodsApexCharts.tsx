@@ -19,98 +19,90 @@ interface PickerProps {
   end: Date | number
 }
 
-const GoodsApexCharts = ({goods, groups} : GoodsChartProps) => {
+const GoodsApexCharts = ({ goods, groups }: GoodsChartProps) => {
   // ** States
   const [endDate, setEndDate] = useState<DateType>(null)
   const [startDate, setStartDate] = useState<DateType>(null)
-  const [series, setSeries] = useState([]);
-  const active = "weekly";
+  const [series, setSeries] = useState([])
+  const active = 'weekly'
   // ** Hook
   const theme = useTheme()
 
   // ** Functions
 
-  function createSeries(){
+  function createSeries() {
+    const categories = getCategories()
 
-    console.log(startDate, endDate);
-    
+    const groups = [...new Set(goods.map(item => item.GOODS_GROUP_KEY))]
 
-    const categories = getCategories();
-  
-    const groups = [...new Set(goods.map(item => item.GOODS_GROUP_KEY))];
-  
-    if( categories.length > 0){
+    if (categories.length > 0) {
       const series = groups.map(groupKey => {
         const groupData = categories.map(category => {
           const sum = goods.reduce((acc, item) => {
             if (item.GOODS_GROUP_KEY === groupKey && item.date.startsWith(category)) {
-              return acc + item.count;
+              return acc + item.count
             } else {
-              return acc;
+              return acc
             }
-          }, 0);
-    
-          return sum;
-        });
-    
+          }, 0)
+
+          return sum
+        })
+
         return {
           name: goods.find(index => index.GOODS_GROUP_KEY === groupKey)?.GROUP_NAME,
           data: groupData
-        };
-      });
-    
-      setSeries(series);
-      console.log(series);
-      console.log(categories);
-      
-      return;
+        }
+      })
+
+      setSeries(series)
+
+      return
     }
 
-    setSeries([]);
+    setSeries([])
   }
 
   function getCategories(): string[] | -1 {
-    let categories: string[] = [];
-  
+    let categories: string[] = []
+
     if (active === 'yearly') {
-      categories = [...new Set(goods.map(item => item.date.slice(0, 4)))];
+      categories = [...new Set(goods.map(item => item.date.slice(0, 4)))]
     } else if (active === 'monthly') {
-      categories = [...new Set(goods.map(item => item.date.slice(0, 7)))];
+      categories = [...new Set(goods.map(item => item.date.slice(0, 7)))]
     } else if (active === 'weekly') {
-      const dateSet = new Set(goods.map(item => item.date));
-      const dateArray = [...dateSet].sort();
-      const startDateValue = startDate ? new Date(startDate) : new Date(dateArray[0]);
-      const endDateValue = endDate ? new Date(endDate) : new Date(dateArray[dateArray.length - 1]);
-      let currentDate = new Date(startDateValue);
-  
+      const dateSet = new Set(goods.map(item => item.date))
+      const dateArray = [...dateSet].sort()
+      const startDateValue = startDate ? new Date(startDate) : new Date(dateArray[0])
+      const endDateValue = endDate ? new Date(endDate) : new Date(dateArray[dateArray.length - 1])
+      let currentDate = new Date(startDateValue)
+
       while (currentDate <= endDateValue) {
-        categories.push(currentDate.toISOString().slice(0, 7));
-        currentDate.setDate(currentDate.getDate() + 7);
+        categories.push(currentDate.toISOString().slice(0, 7))
+        currentDate.setDate(currentDate.getDate() + 7)
       }
     }
-  
+
     if (startDate || endDate) {
       categories = categories.filter(category => {
-        if (startDate && new Date(category) < startDate) return false;
-        if (endDate && new Date(category) > endDate) return false;
-        return true;
-      });
+        if (startDate && new Date(category) < startDate) return false
+        if (endDate && new Date(category) > endDate) return false
+        return true
+      })
     }
-  
+
     if (categories.length > 16) {
-      return [];
+      return []
     } else {
-      return categories;
+      return categories
     }
   }
 
   useEffect(() => createSeries(), [goods, startDate, endDate])
 
   if (groups == null) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
-
-  
 
   // ** Chart
 
@@ -151,7 +143,7 @@ const GoodsApexCharts = ({goods, groups} : GoodsChartProps) => {
     },
     xaxis: {
       axisBorder: { show: false },
-      categories: getCategories(),
+      categories: getCategories()
     }
   }
 
@@ -214,16 +206,14 @@ const GoodsApexCharts = ({goods, groups} : GoodsChartProps) => {
         }
       />
       <CardContent>
-      {series.length > 0 ? (
-          <ReactApexcharts
-          type='bar'
-          height={400}
-          options={options}
-          series={series}
-          />
-      ) : <div><h3>Too many buckets, reduce the range</h3></div>}
-
-       </CardContent>
+        {series.length > 0 ? (
+          <ReactApexcharts type='bar' height={400} options={options} series={series} />
+        ) : (
+          <div>
+            <h3>Too many buckets, reduce the range</h3>
+          </div>
+        )}
+      </CardContent>
     </Card>
   )
 }

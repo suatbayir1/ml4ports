@@ -11,66 +11,61 @@ import HeatmapProps from './props/HeatmapProps'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
-
-
-const ApexHeatmapChart = ({lines, title} : HeatmapProps) => {
+const ApexHeatmapChart = ({ lines, title }: HeatmapProps) => {
   // ** Hook
   const theme = useTheme()
   const { t, i18n } = useTranslation()
 
   const [series, setSeries] = useState<any>([])
-  const [selectedOption, setSelectedOption] = useState("2022");
+  const [selectedOption, setSelectedOption] = useState('2022')
 
   const selectorOptions = [
-    { label: "2022", value: "2022" },
-    { label: "2021", value: "2021" },
-    { label: "2020", value: "2020" },
-    { label: "2019", value: "2019" },
-  ];
-
+    { label: '2022', value: '2022' },
+    { label: '2021', value: '2021' },
+    { label: '2020', value: '2020' },
+    { label: '2019', value: '2019' }
+  ]
 
   const handleOptionChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedOption(event.target.value as string);
-  };
+    setSelectedOption(event.target.value as string)
+  }
 
   function getUniqueDischargeLines() {
-    const uniqueDischargeLines = [];
+    const uniqueDischargeLines = []
     for (const line of lines) {
       if (line.DISCHARGE_LINE && !uniqueDischargeLines.includes(line.DISCHARGE_LINE)) {
-        uniqueDischargeLines.push(line.DISCHARGE_LINE);
+        uniqueDischargeLines.push(line.DISCHARGE_LINE)
       }
     }
-    return uniqueDischargeLines;
+    return uniqueDischargeLines
   }
 
   function createSeries() {
-    const uniqueDischargeLines = getUniqueDischargeLines();
-    const series = [];
-  
+    const uniqueDischargeLines = getUniqueDischargeLines()
+    const series = []
+
     // Get unique dates
     const uniqueDates = [...new Set(lines.map(line => line.date))]
-    .filter(date => date.startsWith(selectedOption))
-    .sort();
-  
+      .filter(date => date.startsWith(selectedOption))
+      .sort()
+
     // Loop through unique dates
     for (const date of uniqueDates) {
-      const data = [];
-  
+      const data = []
+
       // Loop through unique dischargeLines
       for (const dischargeLine of uniqueDischargeLines) {
         // Find line with matching date and dischargeLine
-        const line = lines.find(line => line.date === date && line.DISCHARGE_LINE === dischargeLine);
-  
+        const line = lines.find(line => line.date === date && line.DISCHARGE_LINE === dischargeLine)
+
         // If line is found, add its count to the data array, otherwise add 0
-        data.push(line ? line.count : 0);
+        data.push(line ? line.count : 0)
       }
-  
-      series.push({ name: date, data });
+
+      series.push({ name: date, data })
     }
-  
-    console.log(series);
-    
-    setSeries(series);
+
+    setSeries(series)
   }
 
   useEffect(() => createSeries(), [lines, selectedOption])
@@ -134,10 +129,10 @@ const ApexHeatmapChart = ({lines, title} : HeatmapProps) => {
   return (
     <Card>
       <CardHeader
-        title={t("Discharge Lines")}
+        title={t('Discharge Lines')}
         action={
           <Select value={selectedOption} onChange={handleOptionChange}>
-            {selectorOptions.map((option) => (
+            {selectorOptions.map(option => (
               <MenuItem key={option.value} value={option.value}>
                 {option.label}
               </MenuItem>

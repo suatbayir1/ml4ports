@@ -7,6 +7,13 @@ from helpers import prepare_data
 from data.good_groups import goods_groups
 from data.company_groups import company_groups
 from fastapi.middleware.cors import CORSMiddleware
+from params.ShipCountPredictInput import ShipCountPredictInput, ShipCountFifteenDayInput, ShipCountThirtyDayInput, ShipCountSixtyDayInput
+from services.ShipCountPredictor import ShipCountPredictor
+from entities.Ship import Ship
+
+# Service Instances
+shipCountPredictor = ShipCountPredictor()
+ship = Ship()
 
 # PYTHONPATH=.. uvicorn main:app --reload
 
@@ -124,6 +131,31 @@ async def make_gumruk_prediction(gumruk_input: GumrukInput):
         return{"msg": "No prediction"}
     return {"prediction": preds.tolist()}
 
+
+""" SHIP COUNT PREDICTION ENDPOINTS """
+@app.post("/seven_day_ship_count_predict")
+def seven_day_ship_count_predict(input: ShipCountPredictInput):
+    return {"next_7d": shipCountPredictor.seven_day(input)}
+
+@app.post("/five_day_ship_count_predict")
+def seven_day_ship_count_predict(input: ShipCountPredictInput):
+    return {"next_5d": shipCountPredictor.five_day(input)}
+
+@app.post("/fifteen_day_ship_count_predict")
+def fifteen_day_ship_count_predict(input: ShipCountFifteenDayInput):
+    return {"next_15d": shipCountPredictor.fifteen_day(input)}
+
+@app.post("/thirty_day_ship_count_predict")
+def fifteen_day_ship_count_predict(input: ShipCountThirtyDayInput):
+    return {"next_30d": shipCountPredictor.thirty_day(input)}
+
+@app.post("/sixty_day_ship_count_predict")
+def fifteen_day_ship_count_predict(input: ShipCountSixtyDayInput):
+    return {"next_60d": shipCountPredictor.sixty_day(input)}
+
+@app.get("/get_distribution_of_total_ship_count_by_days")
+def fifteen_day_ship_count_predict():
+    return ship.get_distribution_of_total_ship_count_by_days()
 
 if __name__ == '__main__':
     import uvicorn

@@ -65,7 +65,6 @@ const ApexBarChartCompany = () => {
 
   useDebouncedEffect(
     () => {
-      console.log('allGroupedData', allGroupedData)
       const yearsToSearch = getYearsInRange(startDate, endDate)
       const dataToSearch = allGroupedData.filter((data, index) => yearsToSearch.includes(2016 + index))
       const flattenedData = [].concat.apply([], dataToSearch)

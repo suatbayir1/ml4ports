@@ -10,13 +10,10 @@ const isExistsInCache = asyncErrorWrapper(async (req, res, next) => {
   if (cacheResult) {
     result = JSON.parse(cacheResult);
 
-    console.log(result["lastUpdateTime"]);
-
     if (
       Date.now() - result["lastUpdateTime"] >
       process.env.REDIS_CACHE_EXPIRE_TIME
     ) {
-      console.log("belirtilen zaman gecti");
       res.locals.isPassed = true;
       res.locals.dataInMemory = result["data"];
       res.locals.lastUpdateTime = result["lastUpdateTime"];

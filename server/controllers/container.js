@@ -19,7 +19,6 @@ const Container = require("../models/Container");
 // Functions
 const getNumberOfGroupsByContainerType = asyncErrorWrapper(
   async (req, res, next) => {
-    console.log(res.locals);
     let sqlResult;
     if (res.locals.isPassed) {
       const lastUpdateTime = new Date(res.locals.lastUpdateTime);
@@ -31,8 +30,6 @@ const getNumberOfGroupsByContainerType = asyncErrorWrapper(
         "2019-01-01 00:00:00.000"
       );
     }
-
-    console.log(sqlResult);
 
     // await setCache(url, sqlResult);
 

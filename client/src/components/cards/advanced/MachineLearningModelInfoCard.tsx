@@ -32,7 +32,9 @@ const ModelMetadataDialog = dynamic(() => import('src/components/dialogs/models/
 const UsedFeaturesDialog = dynamic(() => import('src/components/dialogs/models/UsedFeaturesDialog'), { ssr: false })
 const SubModelsDialog = dynamic(() => import('src/components/dialogs/models/SubModelsDialog'), { ssr: false })
 const RedeployDialog = dynamic(() => import('src/components/dialogs/models/RedeployDialog'), { ssr: false })
-const MakePredictionDialog = dynamic(()=> import('src/components/dialogs/models/MakePredictionDialog'), { ssr: false })
+const MakePredictionDialog = dynamic(() => import('src/components/dialogs/models/MakePredictionDialog'), { ssr: false })
+const PredictionDialog = dynamic(() => import('src/components/dialogs/models/PredictionDialog'), { ssr: false })
+
 interface DataType {
   title: string
   imgSrc: string
@@ -106,17 +108,17 @@ const MachineLearningModelInfoCard = (props: IProps) => {
     }
   }
 
-  const getImageSource = (metricTitle: string) => {
+  const getImageSource = (idx: number) => {
     let src = ''
 
-    switch (metricTitle) {
-      case 'Accuracy':
+    switch (idx) {
+      case 0:
         src = '/images/cards/logo-zipcar.png'
         break
-      case 'F1 Score':
+      case 1:
         src = '/images/cards/logo-bitbank.png'
         break
-      case 'Recall':
+      case 2:
         src = '/images/cards/logo-aviato.png'
         break
       default:
@@ -124,8 +126,6 @@ const MachineLearningModelInfoCard = (props: IProps) => {
     }
     return src
   }
-
-  console.log('metrics', model.metrics)
 
   return (
     <>
@@ -138,7 +138,7 @@ const MachineLearningModelInfoCard = (props: IProps) => {
         model={model}
         type={props.type}
       />
-      <MakePredictionDialog 
+      <PredictionDialog
         open={currentOverlay === 'prediction' ? true : false}
         model={model}
         handleClose={() => setCurrentOverlay('none')}
@@ -172,8 +172,7 @@ const MachineLearningModelInfoCard = (props: IProps) => {
 
           {model.metrics && model.metrics.length > 0 ? (
             <>
-              {model.metrics.map((item: any) => {
-                console.log(item)
+              {model.metrics.map((item: any, idx: number) => {
                 return (
                   <MLModelInfoProperty
                     progress={item.progress}
@@ -182,7 +181,7 @@ const MachineLearningModelInfoCard = (props: IProps) => {
                     color={item.color}
                     amount={item.amount}
                     subtitle={item.subtitle}
-                    imgSrc={getImageSource(item.title)}
+                    imgSrc={getImageSource(idx)}
                   />
                 )
               })}
@@ -190,7 +189,7 @@ const MachineLearningModelInfoCard = (props: IProps) => {
           ) : (
             <h2>No metrics created</h2>
           )}
-           <Button
+          <Button
             onClick={() => setCurrentOverlay('prediction')}
             fullWidth
             variant='contained'

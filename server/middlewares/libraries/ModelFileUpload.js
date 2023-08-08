@@ -18,7 +18,11 @@ const storage = multer.diskStorage({
 
 // File Filter
 const fileFilter = (req, file, cb) => {
-  let allowedMimeTypes = ["application/xml", "application/octet-stream"];
+  let allowedMimeTypes = [
+    "application/xml",
+    "application/octet-stream",
+    "application/json",
+  ];
 
   if (!allowedMimeTypes.includes(file.mimetype)) {
     return cb(new CustomError("Please provide a valid image file", 400), false);

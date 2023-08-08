@@ -11,7 +11,7 @@ const ModelSchema = new Schema(
     algorithm: {
       type: String,
       required: [true, "Please provide a algorithm"],
-      enum: ["LinearRegression", "KNN", "SVM", "DecisionTree"],
+      enum: ["LinearRegression", "KNN", "SVM", "DecisionTree", "XGBoost"],
     },
     modelType: {
       type: String,

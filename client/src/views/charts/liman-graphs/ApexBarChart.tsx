@@ -24,76 +24,71 @@ import { DateType } from 'src/types/forms/reactDatepickerTypes'
 import ReactApexcharts from 'src/@core/components/react-apexcharts'
 import BarChartProps from './props/GoodsChartProps'
 
-
-const ApexBarChart = ({goods, groups, startDate, endDate }:BarChartProps) => {
+const ApexBarChart = ({ goods, groups, startDate, endDate }: BarChartProps) => {
   // ** States
-  const [series, setSeries] = useState();
-  const active = "monthly";
+  const [series, setSeries] = useState()
+  const active = 'monthly'
   // ** Hook
   const theme = useTheme()
 
   // ** Functions
-  function createSeries(){
+  function createSeries() {
+    const categories = getCategories()
 
-    console.log(startDate, endDate);
-    
+    const groups = [...new Set(goods.map(item => item.GROUP_NAME))]
 
-    const categories = getCategories();
-  
-    const groups = [...new Set(goods.map(item => item.GROUP_NAME))];
-  
-    if( categories != -1){
+    if (categories != -1) {
       const series = groups.map(groupName => {
         const groupData = categories.map(category => {
           const sum = goods.reduce((acc, item) => {
             if (item.GROUP_NAME === groupName && item.date.startsWith(category)) {
-              return acc + item.count;
+              return acc + item.count
             } else {
-              return acc;
+              return acc
             }
-          }, 0);
-    
-          return sum;
-        });
-    
+          }, 0)
+
+          return sum
+        })
+
         return {
           name: groupName,
           data: groupData
-        };
-      });
-    
-      setSeries(series);
+        }
+      })
+
+      setSeries(series)
     }
   }
 
   function getCategories(): string[] | -1 {
-    let categories: string[] = [];
-  
+    let categories: string[] = []
+
     if (active === 'yearly') {
-      categories = [...new Set(goods.map(item => item.date.slice(0, 4)))];
+      categories = [...new Set(goods.map(item => item.date.slice(0, 4)))]
     } else if (active === 'monthly') {
-      categories = [...new Set(goods.map(item => item.date.slice(0, 7)))];
-    } 
-  
+      categories = [...new Set(goods.map(item => item.date.slice(0, 7)))]
+    }
+
     if (startDate || endDate) {
       categories = categories.filter(category => {
-        if (startDate && category < startDate) return false;
-        if (endDate && category > endDate) return false;
-        return true;
-      });
+        if (startDate && category < startDate) return false
+        if (endDate && category > endDate) return false
+        return true
+      })
     }
-  
+
     if (categories.length > 100) {
-      return -1;
+      return -1
     } else {
-      return categories;
+      return categories
     }
   }
 
   useEffect(() => createSeries(), [goods, startDate, endDate])
 
   if (groups == null) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   const options: ApexOptions = {
@@ -165,12 +160,7 @@ const ApexBarChart = ({goods, groups, startDate, endDate }:BarChartProps) => {
         // }
       />
       <CardContent>
-        <ReactApexcharts
-          type='bar'
-          height={400}
-          options={options}
-          series={series}
-        />
+        <ReactApexcharts type='bar' height={400} options={options} series={series} />
       </CardContent>
     </Card>
   )

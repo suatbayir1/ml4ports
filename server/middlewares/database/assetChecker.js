@@ -9,7 +9,6 @@ const Model = require("../../models/Model");
 
 const checkTrainedModelMetadataIsExists = asyncErrorWrapper(
   async (req, res, next) => {
-    console.log(req.body);
     const { modelName } = req.body;
 
     const model = await Model.findOne({ modelName: modelName });

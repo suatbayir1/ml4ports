@@ -1,6 +1,7 @@
 // ** React Imports
 import React, { ChangeEvent, SyntheticEvent, forwardRef, MouseEvent, useState } from 'react'
 import { NotificationManager } from 'react-notifications'
+import { AppDispatch } from 'src/store'
 
 // ** MUI Imports
 import TabList from '@mui/lab/TabList'
@@ -108,12 +109,9 @@ const Redeploy = (props: IProps) => {
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | SelectChangeEvent<string>>,
     index: number
   ) => {
-    console.log(event.target.name)
     let tempMetrics: any[] = [...metrics]
 
     tempMetrics[index][event.target.name as keyof Metric] = event.target.value
-
-    console.log(tempMetrics)
 
     setMetrics(tempMetrics)
   }
@@ -122,7 +120,6 @@ const Redeploy = (props: IProps) => {
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | SelectChangeEvent<string>>,
     index: number
   ) => {
-    console.log(event.target.name)
     let tempInputs: any[] = [...inputs]
 
     tempInputs[index][event.target.name as keyof Metric] = event.target.value
@@ -134,7 +131,6 @@ const Redeploy = (props: IProps) => {
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | SelectChangeEvent<string>>,
     index: number
   ) => {
-    console.log(event.target.name)
     let tempOutputs: any[] = [...outputs]
 
     tempOutputs[index][event.target.name as keyof Metric] = event.target.value
@@ -190,7 +186,6 @@ const Redeploy = (props: IProps) => {
     }
 
     for await (const metric of metrics) {
-      console.log(metric)
       if (metric.amount === '' || metric.color === '' || metric.title === '' || metric.subtitle === '') {
         NotificationManager.error('Please fill in the metrics completely', 'Error', 3000)
         return
@@ -302,6 +297,7 @@ const Redeploy = (props: IProps) => {
                               <MenuItem value='KNN'>KNN</MenuItem>
                               <MenuItem value='SVM'>SVM</MenuItem>
                               <MenuItem value='DecisionTree'>Decision Tree</MenuItem>
+                              <MenuItem value='XGBoost'>XGBoost</MenuItem>
                             </Select>
                           </FormControl>
                         </Grid>
@@ -385,7 +381,14 @@ const Redeploy = (props: IProps) => {
                           return (
                             <React.Fragment key={index}>
                               <Grid item xs={12} sm={3}>
-                                <FormControl fullWidth>
+                                <TextField
+                                  fullWidth
+                                  label='Title'
+                                  name='title'
+                                  value={metric.title}
+                                  onChange={e => handleChangeMetricInput(e, index)}
+                                />
+                                {/* <FormControl fullWidth>
                                   <InputLabel id='form-layouts-separator-select-label'>Title</InputLabel>
                                   <Select
                                     label='Title'
@@ -400,7 +403,7 @@ const Redeploy = (props: IProps) => {
                                     <MenuItem value='F1 Score'>F1 Score</MenuItem>
                                     <MenuItem value='Recall'>Recall</MenuItem>
                                   </Select>
-                                </FormControl>
+                                </FormControl> */}
                               </Grid>
                               <Grid item xs={12} sm={2}>
                                 <TextField
@@ -620,6 +623,7 @@ const Redeploy = (props: IProps) => {
                               <MenuItem value='KNN'>KNN</MenuItem>
                               <MenuItem value='SVM'>SVM</MenuItem>
                               <MenuItem value='DecisionTree'>Decision Tree</MenuItem>
+                              <MenuItem value='XGBoost'>XGBoost</MenuItem>
                             </Select>
                           </FormControl>
                         </Grid>

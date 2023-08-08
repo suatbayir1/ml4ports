@@ -97,9 +97,17 @@ LEFT JOIN V_TBL_YARDS Y ON VW.YARD_KEY=Y.YARD_KEY
 LEFT JOIN V_TBL_YARD_GROUPS YG ON Y.YARD_GROUP_KEY=YG.YARD_GROUP_KEY
 ORDER BY VW.CONTAINER_KEY`;
 
+const getDistributionOfTotalShipCountByDays = () => `
+SELECT O.MOORAGE_DATE AS DATE, COUNT(*) AS TOTAL 
+FROM PORTDATA.DBO.V_TBL_ORDERS O INNER JOIN PORTDATA.DBO.V_TBL_SHIPS S ON O.SHIP_KEY = S.SHIP_KEY
+WHERE O.MOORAGE_DATE IS NOT NULL
+GROUP BY O.MOORAGE_DATE 
+ORDER BY O.MOORAGE_DATE`;
+
 module.exports = {
   getContainersQuery,
   getNumberOfGroupsByContainerType,
   getDailyContainersQuery,
-  getCurrentPortStatusQuery
+  getCurrentPortStatusQuery,
+  getDistributionOfTotalShipCountByDays,
 };

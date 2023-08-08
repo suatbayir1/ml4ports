@@ -24,5 +24,6 @@ export type MLModelType = {
   inputs: ModelInput[]
   outputs: ModelOutput[]
   modelPath: string
+  endpoint?: string
   _id?: string
 }

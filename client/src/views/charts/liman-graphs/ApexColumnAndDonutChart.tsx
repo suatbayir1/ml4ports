@@ -24,13 +24,13 @@ const columnColors = {
 
 interface ColumnProps {
   goods: {
-    date: string;
-    GOODS_NAME: string;
-    GOODS_GROUP_KEY: number;
-    GROUP_NAME: string;
-    count: number;
-  }[];
-  title: string;
+    date: string
+    GOODS_NAME: string
+    GOODS_GROUP_KEY: number
+    GROUP_NAME: string
+    count: number
+  }[]
+  title: string
 }
 
 interface PickerProps {
@@ -38,7 +38,7 @@ interface PickerProps {
   end: Date | number
 }
 
-const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
+const ApexColumnAndDonutChart = ({ goods, groups }: LineChartProps) => {
   // ** Hook
   const theme = useTheme()
   const { t, i18n } = useTranslation()
@@ -47,159 +47,153 @@ const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
   const [startDate, setStartDate] = useState<any>(null)
   const [seriesColumn, setSeriesColumn] = useState<any>([])
   const [seriesDonut, setSeriesDonut] = useState<any>([])
-  const [active, setActive] = useState<string | null>("monthly")
+  const [active, setActive] = useState<string | null>('monthly')
 
   let flag = 0 //0 - OK, 1 - Too many buckets, 2 - No data
 
   const shortName = {
-    "Adi Metaller ve Adi Metallerden Eşya": "Adi Metaller",
-    "Ağaç ve Ahşap Eşya": "Ağaç Eşya",
-    "Ayakkabılar, Başlıklar, Şemsiyeler vb.": "Giysi ve Aksesuar",
-    "Bitkisel Ürünler": "Bitkiler",
-    "Canlı Hayvanlar ve Hayvansal Ürünler": "Hayvanlar",
-    "Dokumaya Elverişli Maddeler ve Bunlardan Mamul Eşya": "Dokuma Maddeleri",
-    "Gıda Sanayii Müstahzarları": "Gıda Sanayii",
-    "Ham Postlar ve Derile vb. Maddelerden Mamul Eşya": "Deri Mamulleri",
-    "Hayvansal ve bitkisel katı ve sıvı yağlar": "Yağlar",
-    "Kimya Sanayii ve Buna Bağlı Sanayii Ürünleri": "Kimya Ürünleri",
-    "Makinalar ve Mekanik Cihazlar": "Makineler",
-    "Mineral Maddeler": "Mineraller",
-    "Muhtelif Mamul Eşya": "Çeşitli Mamuller",
-    "Nakil Vasıtaları": "Taşıtlar",
-    "Odun ve Geri Kazanılmış Kağıt veya Karton vb.": "Geri Dönüşüm",
-    "Optik Alet ve Cihazlar, Tıbbi veya Cerrahi Alet ve Cihazlar": "Tıbbi Aletler",
-    "Plastikler ve Mamulleri; Kauçuk ve Mamulleri": "Plastik ve Kauçuk",
-    "Sanat Eserleri, Kolleksiyon Eşyası ve Antikalar": "Sanat ve Antika",
-    "Silahlar ve Mühimmat": "Silahlar",
-    "Taş, Alçı, Çimento, Mika veya Benzeri Maddelerden Eşya": "İnşaat Malzemeleri",
-    };
+    'Adi Metaller ve Adi Metallerden Eşya': 'Adi Metaller',
+    'Ağaç ve Ahşap Eşya': 'Ağaç Eşya',
+    'Ayakkabılar, Başlıklar, Şemsiyeler vb.': 'Giysi ve Aksesuar',
+    'Bitkisel Ürünler': 'Bitkiler',
+    'Canlı Hayvanlar ve Hayvansal Ürünler': 'Hayvanlar',
+    'Dokumaya Elverişli Maddeler ve Bunlardan Mamul Eşya': 'Dokuma Maddeleri',
+    'Gıda Sanayii Müstahzarları': 'Gıda Sanayii',
+    'Ham Postlar ve Derile vb. Maddelerden Mamul Eşya': 'Deri Mamulleri',
+    'Hayvansal ve bitkisel katı ve sıvı yağlar': 'Yağlar',
+    'Kimya Sanayii ve Buna Bağlı Sanayii Ürünleri': 'Kimya Ürünleri',
+    'Makinalar ve Mekanik Cihazlar': 'Makineler',
+    'Mineral Maddeler': 'Mineraller',
+    'Muhtelif Mamul Eşya': 'Çeşitli Mamuller',
+    'Nakil Vasıtaları': 'Taşıtlar',
+    'Odun ve Geri Kazanılmış Kağıt veya Karton vb.': 'Geri Dönüşüm',
+    'Optik Alet ve Cihazlar, Tıbbi veya Cerrahi Alet ve Cihazlar': 'Tıbbi Aletler',
+    'Plastikler ve Mamulleri; Kauçuk ve Mamulleri': 'Plastik ve Kauçuk',
+    'Sanat Eserleri, Kolleksiyon Eşyası ve Antikalar': 'Sanat ve Antika',
+    'Silahlar ve Mühimmat': 'Silahlar',
+    'Taş, Alçı, Çimento, Mika veya Benzeri Maddelerden Eşya': 'İnşaat Malzemeleri'
+  }
 
-    const handleOnChange = (dates: any) => {
-      const [start, end] = dates
-      setStartDate(start)
-      setEndDate(end)
-  
-      createSeriesColumn();
-      createSeriesDonut();
-    }
-  
-    const handleActive = (event: MouseEvent<HTMLElement>, newActive: string | null) => {
-      setActive(newActive)
-    }
-  
+  const handleOnChange = (dates: any) => {
+    const [start, end] = dates
+    setStartDate(start)
+    setEndDate(end)
 
-  function createSeriesColumn(){
+    createSeriesColumn()
+    createSeriesDonut()
+  }
 
-    const categories = getCategoriesColumn()?.sort();
-  
-    const groups = [...new Set(goods.map(item => item.GOODS_GROUP_KEY))];
-  
-    if(categories.length > 0){
+  const handleActive = (event: MouseEvent<HTMLElement>, newActive: string | null) => {
+    setActive(newActive)
+  }
+
+  function createSeriesColumn() {
+    const categories = getCategoriesColumn()?.sort()
+
+    const groups = [...new Set(goods.map(item => item.GOODS_GROUP_KEY))]
+
+    if (categories.length > 0) {
       const series = groups.map(groupKey => {
         const groupData = categories.map(category => {
           const sum = goods.reduce((acc, item) => {
-            if (item.GOODS_GROUP_KEY === groupKey && item.date.startsWith(category) && item.GROUP_NAME != undefined && item.GOODS_GROUP_KEY !== undefined && item.GROUP_NAME !== undefined) {
-              return acc + item.count;
+            if (
+              item.GOODS_GROUP_KEY === groupKey &&
+              item.date.startsWith(category) &&
+              item.GROUP_NAME != undefined &&
+              item.GOODS_GROUP_KEY !== undefined &&
+              item.GROUP_NAME !== undefined
+            ) {
+              return acc + item.count
             } else {
-              return acc;
+              return acc
             }
-          }, 0);
-    
-          return sum;
-        });
-    
-        if(shortName[goods.find(index => index.GOODS_GROUP_KEY === groupKey)?.GROUP_NAME]){
+          }, 0)
+
+          return sum
+        })
+
+        if (shortName[goods.find(index => index.GOODS_GROUP_KEY === groupKey)?.GROUP_NAME]) {
           return {
             name: shortName[goods.find(index => index.GOODS_GROUP_KEY === groupKey)?.GROUP_NAME],
             data: groupData
-          };
-        }else{
+          }
+        } else {
           return {
             name: '',
             data: []
-          };
+          }
         }
-      });
+      })
 
-      setSeriesColumn(series.filter(item => item.name != '').sort((a, b) => a.name.localeCompare(b.name))
-      );
-      return;
+      setSeriesColumn(series.filter(item => item.name != '').sort((a, b) => a.name.localeCompare(b.name)))
+      return
     }
     setSeriesColumn([])
   }
 
-  function createSeriesDonut(){
-    let filteredGoods = goods;
+  function createSeriesDonut() {
+    let filteredGoods = goods
 
-    if(startDate){
-      filteredGoods = endDate ? goods.filter(item => {
-        const date = new Date(item.date);
-        return date >= startDate && date <= endDate;
-      }) : goods.filter(item => {
-        const date = new Date(item.date);
-        return date >= startDate;
-      });
+    if (startDate) {
+      filteredGoods = endDate
+        ? goods.filter(item => {
+            const date = new Date(item.date)
+            return date >= startDate && date <= endDate
+          })
+        : goods.filter(item => {
+            const date = new Date(item.date)
+            return date >= startDate
+          })
     }
 
     const goodsByGroups = filteredGoods.reduce((acc, item) => {
       if (!acc[shortName[item.GROUP_NAME]]) {
-        acc[shortName[item.GROUP_NAME]] = [];
+        acc[shortName[item.GROUP_NAME]] = []
       }
-      acc[shortName[item.GROUP_NAME]].push(item);
-      return acc;
-    }, {});
-  
-
-    
+      acc[shortName[item.GROUP_NAME]].push(item)
+      return acc
+    }, {})
 
     // Next, iterate over the regimes and sum the count values for each series
     const series = groups.map(item => {
-      const goodsForGroups = goodsByGroups[shortName[item.GROUP_NAME]] || [];
-      const countForGroups = goodsForGroups.reduce((acc, item) => acc + item.count, 0);
-      return countForGroups;
-    });
-  
-    console.log(series);
-    
+      const goodsForGroups = goodsByGroups[shortName[item.GROUP_NAME]] || []
+      const countForGroups = goodsForGroups.reduce((acc, item) => acc + item.count, 0)
+      return countForGroups
+    })
 
-    setSeriesDonut(series);
+    setSeriesDonut(series)
   }
-
-  
 
   function getCategoriesColumn(): string[] | null {
-    let categories: string[] = [];
-  
+    let categories: string[] = []
+
     if (active === 'yearly') {
-      categories = [...new Set(goods.map(item => item.date.slice(0, 4)))];
+      categories = [...new Set(goods.map(item => item.date.slice(0, 4)))]
     } else if (active === 'monthly') {
-      categories = [...new Set(goods.map(item => item.date.slice(0, 7)))];
-    } 
-  
+      categories = [...new Set(goods.map(item => item.date.slice(0, 7)))]
+    }
+
     if (startDate || endDate) {
       categories = categories.filter(category => {
-        if (startDate && new Date(category) < startDate) return false;
-        if (endDate && new Date(category) > endDate) return false;
-        return true;
-      });
+        if (startDate && new Date(category) < startDate) return false
+        if (endDate && new Date(category) > endDate) return false
+        return true
+      })
     }
-
 
     if (categories.length == 0) {
-      flag = 2;
-      return [];
+      flag = 2
+      return []
     }
     if (categories.length > 50) {
-      flag = 1;
-      return [];
+      flag = 1
+      return []
     } else {
-      flag = 0;
-      return categories;
+      flag = 0
+      return categories
     }
   }
 
-
-  
   useEffect(() => createSeriesColumn(), [goods, startDate, endDate, active])
   useEffect(() => createSeriesDonut(), [goods, startDate, endDate])
 
@@ -226,13 +220,13 @@ const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
       }
     },
     stroke: {
-      show: true,
+      show: true
     },
     plotOptions: {
       bar: {
         columnWidth: '15%',
         colors: {
-          backgroundBarRadius: 10,
+          backgroundBarRadius: 10
         }
       }
     },
@@ -302,7 +296,10 @@ const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
 
   const optionsDonut: ApexOptions = {
     stroke: { width: 0 },
-    labels: groups.filter(item => shortName[item.GROUP_NAME]).map(item => shortName[item.GROUP_NAME]).sort(),
+    labels: groups
+      .filter(item => shortName[item.GROUP_NAME])
+      .map(item => shortName[item.GROUP_NAME])
+      .sort(),
     dataLabels: {
       enabled: true,
       formatter: (val: string) => `${parseInt(val, 10)}%`
@@ -328,7 +325,7 @@ const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
               fontSize: '1.2rem',
               color: theme.palette.text.secondary,
               formatter: (val: string) => `${parseInt(val, 10)}`
-            },
+            }
           }
         }
       }
@@ -373,18 +370,20 @@ const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
       }
     ]
   }
-  
+
   return (
     <Card>
       <CardHeader
-        title={t("GoodsGraphTitle")}
+        title={t('GoodsGraphTitle')}
         subheader={
           <ToggleButtonGroup exclusive value={active} onChange={handleActive}>
-            <ToggleButton value='yearly'>{t("Yearly")}</ToggleButton>
-            <ToggleButton value='monthly'>{t("Monthly")}</ToggleButton>
+            <ToggleButton value='yearly'>{t('Yearly')}</ToggleButton>
+            <ToggleButton value='monthly'>{t('Monthly')}</ToggleButton>
           </ToggleButtonGroup>
         }
-        subheaderTypographyProps={{ sx: { marginTop:'15px', color: theme => `${theme.palette.text.disabled} !important` } }}
+        subheaderTypographyProps={{
+          sx: { marginTop: '15px', color: theme => `${theme.palette.text.disabled} !important` }
+        }}
         sx={{
           flexDirection: ['column', 'row'],
           alignItems: ['flex-start', 'center'],
@@ -393,36 +392,42 @@ const ApexColumnAndDonutChart = ({goods, groups }: LineChartProps) => {
         }}
         action={
           <>
-          <DatePicker
-            selectsRange
-            endDate={endDate}
-            id='apexchart-area'
-            startDate={startDate}
-            selected={startDate}
-            onChange={handleOnChange}
-            placeholderText={t("DatePicker")}
-            customInput={<CustomInput start={startDate as Date | number} end={endDate as Date | number} />}
-          />
+            <DatePicker
+              selectsRange
+              endDate={endDate}
+              id='apexchart-area'
+              startDate={startDate}
+              selected={startDate}
+              onChange={handleOnChange}
+              placeholderText={t('DatePicker')}
+              customInput={<CustomInput start={startDate as Date | number} end={endDate as Date | number} />}
+            />
           </>
         }
       />
       <CardContent>
         <Grid item container spacing={6} xs={12}>
-              <Grid item md={4} xs={6}>
-                <ReactApexcharts type='donut' height={400} options={optionsDonut} series={seriesDonut} />
-              </Grid>
-              <Grid item md={8} xs={12}>
-                {flag == 1? (
-                  <div><h3>Pool is too lanrge unable to show</h3></div>
-                ) : ''}
-                {flag == 2 ? (
-                  <div><h3>No data to show, check your date range</h3></div>
-                ) : ''}
-                {flag == 0 ? (
-                    <ReactApexcharts type='bar' height={400} options={optionsColumn} series={seriesColumn} />
-                ) : ''}
-              </Grid>
-            </Grid>
+          <Grid item md={4} xs={6}>
+            <ReactApexcharts type='donut' height={400} options={optionsDonut} series={seriesDonut} />
+          </Grid>
+          <Grid item md={8} xs={12}>
+            {flag == 1 ? (
+              <div>
+                <h3>Pool is too lanrge unable to show</h3>
+              </div>
+            ) : (
+              ''
+            )}
+            {flag == 2 ? (
+              <div>
+                <h3>No data to show, check your date range</h3>
+              </div>
+            ) : (
+              ''
+            )}
+            {flag == 0 ? <ReactApexcharts type='bar' height={400} options={optionsColumn} series={seriesColumn} /> : ''}
+          </Grid>
+        </Grid>
       </CardContent>
     </Card>
   )
