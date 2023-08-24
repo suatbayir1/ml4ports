@@ -11,15 +11,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from 'src/store'
 import { MLModelType } from 'src/types/components/mlTypes'
 
-// ** Distribution Data
-import {
-  fiveDayDistribution,
-  sevenDayDistribution,
-  fifteenDayDistribution,
-  thirtyDayDistribution,
-  sixtyDayDistribution
-} from 'src/@fake-db/charts/predict'
-
 // ** Styled Components
 import RechartsWrapper from 'src/@core/styles/libs/recharts'
 
@@ -71,7 +62,6 @@ const PredictionsOnBarChart = (props: Props) => {
   // ** Hooks
   const dispatch = useDispatch<AppDispatch>()
   const store = useSelector((state: RootState) => state.model)
-  console.log('store', store)
 
   const getPredictionResult = (): number => {
     switch (props.model.modelName) {

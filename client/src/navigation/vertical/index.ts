@@ -36,6 +36,14 @@ const navigation = (): VerticalNavItemsType => {
       path: '/ml/models'
     },
     {
+      sectionTitle: 'Simulation'
+    },
+    {
+      title: 'Simulation',
+      icon: 'mdi:email-outline',
+      path: '/simulation'
+    },
+    {
       sectionTitle: 'Apps & Pages'
     },
     {
