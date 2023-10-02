@@ -1,9 +1,11 @@
 import dill
+import json
 import joblib
 from typing import List
 from fastapi import FastAPI
 from pydantic import BaseModel
 from helpers import prepare_data
+from tree_read_helpers import store_random_paths, return_random_path
 from data.good_groups import goods_groups
 from data.company_groups import company_groups
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,6 +16,7 @@ from entities.Ship import Ship
 # Service Instances
 shipCountPredictor = ShipCountPredictor()
 ship = Ship()
+from datetime import datetime, timedelta
 
 # PYTHONPATH=.. uvicorn main:app --reload
 
@@ -27,6 +30,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+global simulation_tree
+
+# read tree data
+with open("./tree/tree_with_end_nodes_v4.json", "r") as json_file:
+    simulation_tree = json_file.read()
+
+all_tree_read = json.loads(simulation_tree)
 
 class TdayInput(BaseModel):
     # name: str
@@ -63,6 +74,11 @@ class GumrukInput(BaseModel):
     company: List[str]
     model_path: str
 
+class SimulationInput(BaseModel):
+    date: str
+    number_of_containers: int
+    rules: List[str]
+
 async def load_model(model_path):
     # Load your machine learning model
     return joblib.load(model_path)
@@ -76,6 +92,16 @@ async def load_gumruk_model(model_path):
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+@app.post("/create-simulation")
+def create_simulation(simulation_input: SimulationInput):
+    start_node = 'start'
+    num_paths = simulation_input.number_of_containers
+    path_store = store_random_paths(all_tree_read, start_node, num_paths)
+    start_date_time = simulation_input.date # datetime.now() format "%Y-%m-%d %H:%M:%S"
+    rules = simulation_input.rules
+    result = return_random_path(path_store, start_date_time, num_paths, rules)
+    return {"number_of_containers": len(result),"steps": result}
 
 
 @app.get("/company_groups")
@@ -94,8 +120,7 @@ def get_good_groups():
     return goods_groups
 
 @app.post("/tday_input")
-async def make_tday_prediction(tday_input: TdayInput):
-    
+async def make_tday_prediction(tday_input: TdayInput):    
     # Wait for the model to be loaded
     print(tday_input.model_path)
     tday_model = await load_model(f"./models/{tday_input.model_path}") # randomforest_model.joblib
@@ -114,8 +139,7 @@ async def make_tday_prediction(tday_input: TdayInput):
 #     return {"item_name": item.name, "item_id": item_id}
 
 @app.post("/gumruk_input")
-async def make_gumruk_prediction(gumruk_input: GumrukInput):
-    
+async def make_gumruk_prediction(gumruk_input: GumrukInput):    
     # Wait for the model to be loaded    
     print(gumruk_input.model_path)
     gumruk_model, scoring = await load_gumruk_model(f'./models/{gumruk_input.model_path}') #gumruk_ensemble_model.pkl
