@@ -25,7 +25,12 @@ export const simulationSlice = createSlice({
   name: 'simulationSlice',
   initialState: {
     hierarchy: {
-      root: {},
+      root: {
+        title: '',
+        flag: '',
+        name: '',
+        id: ''
+      },
       docks: [],
       ships: [],
       cranes: [],

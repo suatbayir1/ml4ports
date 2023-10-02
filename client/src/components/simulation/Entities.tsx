@@ -1,11 +1,12 @@
 import React from 'react'
-import { Cranes, Trucks, Ships, Operators } from './index'
+import { Port, Cranes, Trucks, Ships, Operators } from './index'
 
 type Props = {}
 
 const Entities = (props: Props) => {
   return (
     <div>
+      <Port />
       <Ships />
       <Cranes />
       <Trucks />

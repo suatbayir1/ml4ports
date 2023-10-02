@@ -23,8 +23,8 @@ import ScrollBar from 'react-perfect-scrollbar'
 import { getShipOperationTime } from 'src/helpers/converter/timeConverter'
 
 // ** Store
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/store'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/store'
 
 interface DataType {
   src: string
@@ -50,7 +50,7 @@ const Ships = () => {
         }
       />
       <CardContent>
-        <ScrollBar style={{ height: 200 }}>
+        <ScrollBar style={{ height: 120 }}>
           {store.hierarchy.ships.map((item: DataType, index: number) => {
             return (
               <Box

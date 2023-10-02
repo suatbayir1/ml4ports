@@ -1,6 +1,18 @@
 // Libraries
 const asyncErrorWrapper = require("express-async-handler");
 
+// Services
+const SimulationService = require("../services/SimulationService");
+
+// Constants
+const {
+  getPort,
+  getDocks,
+  getShips,
+  getCranes,
+  getTrucks,
+} = require("../config/queries/sqlQueries");
+
 const getHierarchy = asyncErrorWrapper(async (req, res, next) => {
   let data = {
     root: {
@@ -168,10 +180,84 @@ const getHierarchy = asyncErrorWrapper(async (req, res, next) => {
     });
   }
 
+  let hierarchy = {
+    root: {},
+    docks: [],
+    ships: [],
+    cranes: [],
+    siteCranes: [],
+    trucks: [],
+  };
+
+  const ports = await SimulationService.get(getPort());
+
+  for (const port of ports) {
+    hierarchy.root = {
+      id: port.PORT_CODE,
+      name: port.PORT_NAME,
+      flag: port.FLAG,
+      imgSource: "/images/icons/simulation/port.png",
+    };
+
+    const docks = await SimulationService.get(getDocks());
+
+    for (const dock of docks) {
+      hierarchy.docks.push({
+        id: `dock${dock.SEA_PORT_KEY}`,
+        name: dock.DESCRIPTION,
+        parent: port.PORT_CODE,
+        imgSource: "/images/icons/simulation/dock.png",
+      });
+
+      const ships = await SimulationService.get(getShips(dock.SEA_PORT_KEY));
+
+      for (const ship of ships) {
+        hierarchy.ships.push({
+          id: `ship${ship.ORDER_KEY}`,
+          name: ship.SHIP_NAME,
+          parent: `dock${dock.SEA_PORT_KEY}`,
+          chipText: "Discharge",
+          chipColor: "primary",
+          title: ship.SHIP_NAME,
+          subtitle: ship.MOORAGE_DATE,
+          imgSource: "/images/icons/simulation/ship.png",
+        });
+
+        const cranes = await SimulationService.get(getCranes(ship.ORDER_KEY));
+
+        for (const crane of cranes) {
+          hierarchy.cranes.push({
+            trendDir: "down",
+            amount: "00:44",
+            title: crane.VINC,
+            imgAlt: "credit-card",
+            avatarColor: "success",
+            subtitle: crane.VINC_OPERATOR,
+            id: `crane${crane.GANG_KEY}`,
+            name: crane.VINC,
+            parent: `ship${ship.ORDER_KEY}`,
+            imgSource: "/images/icons/simulation/crane.png",
+          });
+
+          const trucks = await SimulationService.get(getTrucks(crane.GANG_KEY));
+
+          for (const truck of trucks) {
+            hierarchy.trucks.push({
+              id: `truck${truck.GANG_EQUIPMENT_KEY}`,
+              name: truck.KAMYON,
+              parent: `crane${crane.GANG_KEY}`,
+              imgSource: "/images/icons/simulation/truck.png",
+            });
+          }
+        }
+      }
+    }
+  }
+
   res.status(200).json({
     fromCache: false,
     lastUpdateTime: Date.now(),
-    data: data,
+    data: hierarchy,
   });
 });
 

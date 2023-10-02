@@ -19,8 +19,8 @@ import OptionsMenu from 'src/@core/components/option-menu'
 import ScrollBar from 'react-perfect-scrollbar'
 
 // ** Store
-import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from 'src/store'
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/store'
 
 interface DataType {
   title: string

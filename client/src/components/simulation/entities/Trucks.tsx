@@ -18,6 +18,10 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 // ** Third Party Imports
 import ScrollBar from 'react-perfect-scrollbar'
 
+// ** Store
+import { useSelector } from 'react-redux'
+import { RootState } from 'src/store'
+
 interface DataType {
   imgWidth: number
   imgHeight: number
@@ -101,6 +105,11 @@ const data: DataType[] = [
 ]
 
 const Trucks = () => {
+  // ** Hooks
+  const store = useSelector((state: RootState) => state.simulation)
+
+  console.log(store.hierarchy)
+
   return (
     <Card>
       <CardHeader
@@ -115,10 +124,10 @@ const Trucks = () => {
       />
       <CardContent sx={{ pt: theme => `${theme.spacing(2)} !important` }}>
         <ScrollBar style={{ height: 175 }}>
-          {data.map((item: DataType, index: number) => {
+          {store.hierarchy.trucks.map((item: DataType, index: number) => {
             return (
               <Box
-                key={item.title}
+                key={item.id}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
@@ -140,29 +149,29 @@ const Trucks = () => {
                 >
                   <Box sx={{ mr: 2, display: 'flex', flexDirection: 'column' }}>
                     <Box sx={{ display: 'flex' }}>
-                      <Typography sx={{ mr: 0.5, fontWeight: 600, letterSpacing: '0.25px' }}>{item.title}</Typography>
+                      <Typography sx={{ mr: 0.5, fontWeight: 600, letterSpacing: '0.25px' }}>{item.name}</Typography>
                       <Box
                         sx={{
                           display: 'flex',
                           alignItems: 'center',
-                          '& svg': { fontWeight: 600, color: item.trendDir === 'down' ? 'error.main' : 'success.main' }
+                          '& svg': { fontWeight: 600, color: 'success.main' }
                         }}
                       >
-                        <Icon icon={item.trendDir === 'down' ? 'mdi:chevron-down' : 'mdi:chevron-up'} />
+                        <Icon icon={'mdi:chevron-up'} />
                         <Typography
                           variant='caption'
                           sx={{
                             fontWeight: 600,
                             lineHeight: 1.5,
-                            color: item.trendDir === 'down' ? 'error.main' : 'success.main'
+                            color: 'success.main'
                           }}
                         >
-                          {item.trendNumber}
+                          {'35%'}
                         </Typography>
                       </Box>
                     </Box>
                     <Typography variant='caption' sx={{ lineHeight: 1.5 }}>
-                      {item.subtitle}
+                      {'100 tour'}
                     </Typography>
                   </Box>
 
@@ -170,7 +179,7 @@ const Trucks = () => {
                     <Typography
                       sx={{ fontWeight: 600, fontSize: '0.875rem', lineHeight: 1.72, letterSpacing: '0.22px' }}
                     >
-                      {item.sales}
+                      {455}
                     </Typography>
                     <Typography variant='caption' sx={{ lineHeight: 1.5 }}>
                       Tour
