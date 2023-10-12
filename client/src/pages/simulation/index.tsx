@@ -19,35 +19,47 @@ import SiteStatistics from 'src/components/simulation/SiteStatistics'
 import Graph from 'src/components/simulation/Graph'
 import Entities from 'src/components/simulation/Entities'
 
+// ** Third Party Imports
+import { ReactDatePickerProps } from 'react-datepicker'
+
+// ** Styled Component
+import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
+import { useTheme } from '@mui/material/styles'
+
 type Props = {}
 
 const index = (props: Props) => {
+  const theme = useTheme()
+  const { direction } = theme
+  const popperPlacement: ReactDatePickerProps['popperPlacement'] = direction === 'ltr' ? 'bottom-start' : 'bottom-end'
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <Card>
-          <CardContent>
-            <Grid container spacing={6}>
-              <Grid item xs={12}>
-                <TopInputs />
-              </Grid>
-              <Grid item xs={12}>
-                <SiteStatistics />
-              </Grid>
-              {/* </Grid>
+    <DatePickerWrapper>
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <Grid container spacing={6}>
+                <Grid item xs={12}>
+                  <TopInputs popperPlacement={popperPlacement}/>
+                </Grid>
+                <Grid item xs={12}>
+                  <SiteStatistics />
+                </Grid>
+                {/* </Grid>
 
-            <Grid container spacing={6}> */}
-              <Grid item xs={4}>
-                <Entities />
+              <Grid container spacing={6}> */}
+                <Grid item xs={4}>
+                  <Entities />
+                </Grid>
+                <Grid item xs={8}>
+                  <Graph />
+                </Grid>
               </Grid>
-              <Grid item xs={8}>
-                <Graph />
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
-    </Grid>
+    </DatePickerWrapper>
   )
 }
 
