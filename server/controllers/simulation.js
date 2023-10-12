@@ -4,6 +4,9 @@ const asyncErrorWrapper = require("express-async-handler");
 // Services
 const SimulationService = require("../services/SimulationService");
 
+//Models
+const SimulationConfiguration = require("../models/SimulationConfiguration")
+
 // Constants
 const {
   getPort,
@@ -12,6 +15,40 @@ const {
   getCranes,
   getTrucks,
 } = require("../config/queries/sqlQueries");
+
+const getSimulationConfiguration = asyncErrorWrapper(async (req, res, next) => {
+  try {
+    const configuration = await SimulationConfiguration.findOne({});
+    if (configuration) {
+      res.json(configuration);
+    } 
+    else {
+      const defaultConfiguration = { rules: [] };
+      const newConfiguration = await SimulationConfiguration.create(defaultConfiguration);
+      res.json(newConfiguration);
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get or insert the configuration." });
+  }
+})
+
+const updateSimulationConfiguration = asyncErrorWrapper(async (req, res, next) => {
+  try {
+    const updatedConfiguration = req.body;
+    const existingConfiguration = await SimulationConfiguration.findOne({});
+
+    if (existingConfiguration) {
+      existingConfiguration.rules = updatedConfiguration.rules;
+      await existingConfiguration.save();
+      res.json(existingConfiguration);
+    }
+    else {
+      res.status(404).json({ error: "Configuration not found." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update the configuration." });
+  }
+});
 
 const getHierarchy = asyncErrorWrapper(async (req, res, next) => {
   let data = {
@@ -263,4 +300,6 @@ const getHierarchy = asyncErrorWrapper(async (req, res, next) => {
 
 module.exports = {
   getHierarchy,
+  getSimulationConfiguration,
+  updateSimulationConfiguration
 };

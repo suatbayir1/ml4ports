@@ -101,7 +101,13 @@ def create_simulation(simulation_input: SimulationInput):
     start_date_time = simulation_input.date # datetime.now() format "%Y-%m-%d %H:%M:%S"
     rules = simulation_input.rules
     result = return_random_path(path_store, start_date_time, num_paths, rules)
-    return {"number_of_containers": len(result),"steps": result}
+    ids = list(set([a["container_key"] for a in result]))
+    container_dict = {}
+    for cont in result:
+        if(not cont["container_key"] in container_dict):
+            container_dict[cont["container_key"]] = {"container_key": cont["container_key"], "steps": []}
+        container_dict[cont["container_key"]]["steps"].append(cont)
+    return {"number_of_containers": len(ids),"steps": list(container_dict.values()), "all_results": result}
 
 
 @app.get("/company_groups")
